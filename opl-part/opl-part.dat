@@ -1,0 +1,13 @@
+/*********************************************
+ * OPL 12.7.1.0 Data
+ * Author: alex and asaf
+ * Creation Date: Dec 1, 2017 at 3:50:44 PM
+ *********************************************/
+ 
+nNurses = 5;
+nHours = 24;
+minHours = 10;
+maxHours = 20;
+maxConsec = 4;
+demandH = [1, 2, 3, 2, 4];
+maxPresence = 7;
