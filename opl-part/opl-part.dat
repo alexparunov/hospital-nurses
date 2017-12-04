@@ -3,7 +3,7 @@
  * Author: alex and asaf
  * Creation Date: Dec 1, 2017 at 3:50:44 PM
  *********************************************/
-
+/*
 nNurses = 7;
 nHours = 8;
 minHours = 2;
@@ -11,3 +11,13 @@ maxHours = 5;
 maxConsec = 4;
 demand = [1, 2, 3, 2, 4, 3, 2, 4];
 maxPresence = 6;
+*/
+
+// The big solution (~20 mins)
+nNurses=1100;
+nHours=24;
+minHours=6;
+maxHours=18;
+maxConsec=7;
+maxPresence=24;
+demand=[964, 650, 966, 1021, 824, 387, 828, 952, 611, 468, 403, 561, 862, 597, 1098, 855, 918, 1016, 897, 356, 615, 670, 826, 349];
