@@ -3,11 +3,11 @@
  * Author: alex and asaf
  * Creation Date: Dec 1, 2017 at 3:50:44 PM
  *********************************************/
- 
-nNurses = 5;
-nHours = 24;
-minHours = 10;
-maxHours = 20;
+
+nNurses = 7;
+nHours = 8;
+minHours = 2;
+maxHours = 5;
 maxConsec = 4;
-demandH = [1, 2, 3, 2, 4];
-maxPresence = 7;
+demand = [1, 2, 3, 2, 4, 3, 2, 4];
+maxPresence = 6;
