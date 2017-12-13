@@ -41,12 +41,12 @@ def solution_is_ok(solution = [], minHours = 0, maxHours = 0, maxConsec = 0, max
 	first_pos = 0
 	last_pos = hours-1
 
-	for i in range(hours/2):
+	for i in range(hours):
 		if solution[i] == 1:
 			first_pos = i
 			break
 
-	for j in range(hours-1, hours/2-1, -1):
+	for j in range(hours-1, step = -1):
 		if solution[j] == 1:
 			last_pos = j
 			break
@@ -97,7 +97,7 @@ def gc(solution = [], demand = []):
 	dem = np.array(demand)
 
 	updated_demand = np.array(dem - sol)
-	return(updated_demand, sum(dem) - sum(updated_demand))
+	return(updated_demand, 1/(sum(dem) - sum(updated_demand)))
 
 def is_solved(demand = []):
 	hours = len(demand)
@@ -118,10 +118,17 @@ def solve(elem_solutions = [], demand = []):
 			print("Oops, no solution was found, from given set of element solutions.")
 			return []
 
-		solution_cost = [(el,gc(el, demand)[1]) for el in elem_solutions]
-		solution_cost.sort(key = lambda x: x[1], reverse = True)
-		print(solution_cost[:10])
+		solutions_cost = [(el,gc(el, demand)[1]) for el in elem_solutions]
+        
+        # minCost = 
+        # maxCost = 
+        # alphaP = 0.4
+        filtered_solution_cost = list(filter(lambda x: x[1] <= minCost + alphaP*(maxCost - minCost), solutions_cost))
+        
+        filtered_len = len(filtered_solution_cost)
+        f_pos = math.floor(np.random.rand()*filtered_len)
 		
+        demand = filtered_solution_cost[f_pos][0]
 		k += 1
 		
 
