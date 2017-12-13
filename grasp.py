@@ -96,8 +96,34 @@ def gc(solution = [], demand = []):
 	sol = np.array(solution)
 	dem = np.array(demand)
 
-	res = np.array(dem - sol)
-	return(sum(dem) - sum(res), res)
+	updated_demand = np.array(dem - sol)
+	return(updated_demand, sum(dem) - sum(updated_demand))
+
+def is_solved(demand = []):
+	hours = len(demand)
+
+	for h in range(hours):
+		if demand[h] > 0:
+			return False
+
+	return True
+
+def solve(elem_solutions = [], demand = []):
+	solution = []
+	k = 0
+	while k <= 10:
+		if is_solved(demand):
+			return solution
+		elif k >= len(elem_solutions) and not is_solved(demand):
+			print("Oops, no solution was found, from given set of element solutions.")
+			return []
+
+		solution_cost = [(el,gc(el, demand)[1]) for el in elem_solutions]
+		solution_cost.sort(key = lambda x: x[1], reverse = True)
+		print(solution_cost[:10])
+		
+		k += 1
+		
 
 def main():
 	nNurses = 100000;
@@ -116,14 +142,8 @@ def main():
 		#json.dump(sols, f)
 		#print(len(sols),"solutions generated in:",elapsed,"secs")
 	
-	solutions = json.load(open('solutions.json','r'))
-
-	for i in range(10):
-		cost = gc(solutions[i], demand)
-		print(demand)
-		print(solutions[i], cost[0])
-
-		demand = cost[1]
+	elem_solutions = json.load(open('solutions.json','r'))
+	solve(elem_solutions, demand)
 
 if __name__ == "__main__":
 	main()
