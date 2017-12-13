@@ -90,7 +90,14 @@ def generate_solutions(hours = 0, nurses = 0, minHours = 0, maxHours = 0, maxCon
 			n_sols += 1 
 
 	return solutions
-	
+
+# Greedy Cost function. Return cost and updated demand.
+def gc(solution = [], demand = []):
+	sol = np.array(solution)
+	dem = np.array(demand)
+
+	res = np.array(dem - sol)
+	return(sum(dem) - sum(res), res)
 
 def main():
 	nNurses = 100000;
@@ -102,13 +109,21 @@ def main():
 	maxPresence = 5;
 
 	start_time = timeit.default_timer()
-	sols = generate_solutions(nHours, nNurses, minHours, maxHours, maxConsec, maxPresence)
+	#sols = generate_solutions(nHours, nNurses, minHours, maxHours, maxConsec, maxPresence)
 	elapsed = timeit.default_timer() - start_time
 
-	with open('solutions.json', 'w') as f:
-		json.dump(sols, f)
+	#with open('solutions.json', 'w') as f:
+		#json.dump(sols, f)
+		#print(len(sols),"solutions generated in:",elapsed,"secs")
+	
+	solutions = json.load(open('solutions.json','r'))
 
-	print(len(sols),"solutions generated in:",elapsed,"secs")	
+	for i in range(10):
+		cost = gc(solutions[i], demand)
+		print(demand)
+		print(solutions[i], cost[0])
+
+		demand = cost[1]
 
 if __name__ == "__main__":
 	main()
