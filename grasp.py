@@ -7,7 +7,7 @@ import timeit
 hours = 10
 nurses = 100
 
-# solution represented as binary array [0,1,1,0,...#hours] 
+# element solution represented as binary array [0,1,1,0,...#hours] 
 def num_to_bin(num = 0):
 	bin_ar = []
 	while num != 0:
@@ -16,38 +16,39 @@ def num_to_bin(num = 0):
 
 	return bin_ar
 
-# solution represented as number. one-to-one correspondence between binary array and number
+# element solution represented as number. One-to-one correspondence between binary array and number
 def bin_to_num(bin_ar):
     return sum(list(map(lambda (i,x): x*(2**i), enumerate(bin_ar))))
 
 # check for constraints
-def solution_is_ok(solution = [], minHours = 0, maxHours = 0, maxConsec = 0, maxPresence = 0):
-	if(sum(solution) < minHours): return False
-	if(sum(solution) > maxHours): return False
+def solution_is_ok(el_solution = [], minHours = 0, maxHours = 0, maxConsec = 0, maxPresence = 0):
+	if(sum(el_solution) < minHours): return False
+	if(sum(el_solution) > maxHours): return False
+
+	hours = len(el_solution)
 
 	# maximum consecutive hours constraint
-	hours = len(solution)
 	s = 0
-	for sol in solution:
-		if sol == 0:
+	for el_sol in el_solution:
+		if el_sol == 0:
 			s = 0
 		else:
-			s += sol
+			s += el_sol
 
 		if s > maxConsec:
 			return False
 
-	# first and last positions of 1 in solution binary array
+	# first and last positions of '1' in element solution binary array
 	first_pos = 0
 	last_pos = hours-1
 
 	for i in range(hours):
-		if solution[i] == 1:
+		if el_solution[i] == 1:
 			first_pos = i
 			break
 
-	for j in range(hours-1, step = -1):
-		if solution[j] == 1:
+	for j in range(hours-1, -1, step = -1):
+		if el_solution[j] == 1:
 			last_pos = j
 			break
 
@@ -56,11 +57,11 @@ def solution_is_ok(solution = [], minHours = 0, maxHours = 0, maxConsec = 0, max
 
 	# No rest for more than 2 consecutive hours
 	s = 0
-	for sol in solution[first_pos:last_pos+1]:
-		if s >=2 and sol != 0:
+	for el_sol in el_solution[first_pos:last_pos+1]:
+		if s >=2 and el_sol != 0:
 			return False
 
-		if sol == 1:
+		if el_sol == 1:
 			s = 0
 		else:
 			s += 1
@@ -68,68 +69,61 @@ def solution_is_ok(solution = [], minHours = 0, maxHours = 0, maxConsec = 0, max
 	return True
 
 # Generate at least |2*nurses| solutions so that we can choose
-def generate_solutions(hours = 0, nurses = 0, minHours = 0, maxHours = 0, maxConsec = 0, maxPresence = 0):
+def generate_element_solutions(hours = 0, nurses = 0, minHours = 0, maxHours = 0, maxConsec = 0, maxPresence = 0):
 
 	# calculating the upper bound for solution as number. [1,1,1,1,1....#hours]
 	max_number = 0
 	for h in range(hours):
 		max_number += 2**h
 
-	solutions = []
+	element_solutions = []
 
 	n_sols = 0
 	while n_sols <= 2*nurses:
 		# Generate random number as solution
 		sol_num = int(math.ceil(np.random.rand()*max_number))
-		solution = num_to_bin(sol_num)
-		for i in range(hours-len(solution)):
-			solution.append(0) #appending 0-s
+		el_solution = num_to_bin(sol_num)
+		for i in range(hours-len(el_solution)):
+			el_solution.append(0) #appending 0-s
 		
-		if(solution_is_ok(solution, minHours, maxHours, maxConsec, maxPresence)):
-			solutions.append(solution)
+		if(solution_is_ok(el_solution, minHours, maxHours, maxConsec, maxPresence)):
+			element_solutions.append(solution)
 			n_sols += 1 
 
-	return solutions
+	return element_solutions
 
 # Greedy Cost function. Return cost and updated demand.
-def gc(solution = [], demand = []):
-	sol = np.array(solution)
+def gc(el_solution = [], demand = []):
+	sol = np.array(el_solution)
 	dem = np.array(demand)
 
 	updated_demand = np.array(dem - sol)
 	return(updated_demand, 1/(sum(dem) - sum(updated_demand)))
 
 def is_solved(demand = []):
-	hours = len(demand)
-
-	for h in range(hours):
-		if demand[h] > 0:
-			return False
-
-	return True
+	return any(h <= 0 for h in demand)
 
 def solve(elem_solutions = [], demand = []):
 	solution = []
 	k = 0
-	while k <= 10:
+	while k <= 4:
 		if is_solved(demand):
 			return solution
 		elif k >= len(elem_solutions) and not is_solved(demand):
 			print("Oops, no solution was found, from given set of element solutions.")
 			return []
 
-		solutions_cost = [(el,gc(el, demand)[1]) for el in elem_solutions]
-        
+		el_solutions_cost = [(el,gc(el, demand)[1]) for el in elem_solutions]
+		print(el_solutions_cost)
         # minCost = 
         # maxCost = 
         # alphaP = 0.4
-        filtered_solution_cost = list(filter(lambda x: x[1] <= minCost + alphaP*(maxCost - minCost), solutions_cost))
+        #filtered_el_solutions_cost = list(filter(lambda x: x[1] <= minCost + alphaP*(maxCost - minCost), el_solutions_cost))
         
-        filtered_len = len(filtered_solution_cost)
-        f_pos = math.floor(np.random.rand()*filtered_len)
+        #filtered_len = len(filtered_el_solutions_cost)
+        #f_pos = math.floor(np.random.rand()*filtered_len)
 		
-        demand = filtered_solution_cost[f_pos][0]
-		k += 1
+        #demand = filtered_el_solutions_cost[f_pos][0]
 		
 
 def main():
