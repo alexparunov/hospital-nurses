@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 import numpy as np
 import math
 import json
@@ -16,10 +16,12 @@ maxPresence = 5
 
 demand = [1, 2, 3, 2, 4, 3, 2, 4]
 
+elem_solutions = json.load(open('solutions.json','r'))
+
 # element solution represented as binary array [0,1,1,0,...#hours]
 
 
-def num_to_bin(num=0):
+def num_to_bin(num):
     bin_ar = []
     while num != 0:
         bin_ar.append(num % 2)
@@ -32,12 +34,12 @@ def num_to_bin(num=0):
 
 
 def bin_to_num(bin_ar):
-    return sum(list(map(lambda i, x: x * (2**i), enumerate(bin_ar))))
+    return sum(list(map(lambda (i, x): x * (2**i), enumerate(bin_ar))))
 
 # check for constraints
 
 
-def solution_is_ok(el_solution=[], minHours=0, maxHours=0, maxConsec=0, maxPresence=0):
+def solution_is_ok(el_solution, minHours, maxHours, maxConsec, maxPresence):
     if(sum(el_solution) < minHours):
         return False
     if(sum(el_solution) > maxHours):
@@ -65,7 +67,7 @@ def solution_is_ok(el_solution=[], minHours=0, maxHours=0, maxConsec=0, maxPrese
             first_pos = i
             break
 
-    for j in range(hours - 1, -1, step=-1):
+    for j in range(hours - 1, -1, -1):
         if el_solution[j] == 1:
             last_pos = j
             break
@@ -88,8 +90,28 @@ def solution_is_ok(el_solution=[], minHours=0, maxHours=0, maxConsec=0, maxPrese
 
 # Generate at least |2*nurses| solutions so that we can choose
 
+def generate_all_element_solutions(hours, nurses, minHours, maxHours, maxConsec, maxPresence):
 
-def generate_element_solutions(hours=0, nurses=0, minHours=0, maxHours=0, maxConsec=0, maxPresence=0):
+    max_number = 0
+    for h in range(hours):
+        max_number += 2**h
+
+    cpus = mp.cpu_count() - 1
+
+    pool = mp.Pool(processes=cpus)
+    all_nums = [i for i in range(1,max_number+1)]
+    element_solutions = pool.map(func_generate_solution, all_nums)
+    pool.close()
+
+    element_solutions = list(filter(lambda x: solution_is_ok(x, minHours, maxHours, maxConsec, maxPresence) == True, element_solutions))
+    for element_solution in element_solutions:
+        for i in range(hours - len(element_solution)):
+            element_solution.append(0) # appending 0-s
+
+    with open("all_solutions.json","w") as f:
+        json.dump(element_solutions, f)
+
+def generate_random_element_solutions(hours, nurses, minHours, maxHours, maxConsec, maxPresence):
 
     # calculating the upper bound for solution as number. [1,1,1,1,1....#hours]
     max_number = 0
@@ -112,7 +134,7 @@ def generate_element_solutions(hours=0, nurses=0, minHours=0, maxHours=0, maxCon
 
     return element_solutions
 
-def gc(el_solution=[], demand=[]):
+def gc(el_solution, demand):
     el_sol = np.array(el_solution)
     dem = np.array(demand)
 
@@ -123,7 +145,7 @@ def gc(el_solution=[], demand=[]):
     positive_sum = sum(dem) - sum(updated_demand)
     # total number of decreased hours from negative demand[i] values
     #(the lower, the better)
-    negative_sum = sum(list(map(lambda i, x: updated_demand[i] if x <= 0 else 0, enumerate(demand))))
+    negative_sum = sum(list(map(lambda (i, x): updated_demand[i] if x <= 0 else 0, enumerate(demand))))
     exp1 = 2**positive_sum
     exp2 = 3**(-negative_sum)
     if exp2 != 0:
@@ -142,10 +164,11 @@ def is_solved(demand):
 
 
 def func_map(i):
-    global elem_solutions
-    global demand
+    global elem_solutions, demand
     return elem_solutions[i], gc(elem_solutions[i], demand)[1]
 
+def func_generate_solution(num):
+    return num_to_bin(num)
 
 def get_grasp_set(elem_solutions_cost, alpha):
     minCost = min(list(map(lambda x: x[1], elem_solutions_cost)))
@@ -156,12 +179,13 @@ def get_grasp_set(elem_solutions_cost, alpha):
     return grasp_set
 
 
-def solve(alpha=0.35):
+def solve(alpha=0.2):
     global elem_solutions
     global demand
     solution = []
     used_indices = []
     k = 0
+    cpus = mp.cpu_count() - 1
     while True:
         if(is_solved(demand)):
             return solution
@@ -169,12 +193,11 @@ def solve(alpha=0.35):
             print("Ooops, no solution was found with a given set of element solutions.")
             return []
 
-        cpus = mp.cpu_count() - 1
-
-        pool = mp.Pool(processes=cpus)
-        all_indices = [i for i in range(len(elem_solutions))]
-        elem_solutions_cost = pool.map(func_map, all_indices)
-        pool.close()
+        if k < 4:
+            pool = mp.Pool(processes=cpus)
+            all_indices = [i for i in range(len(elem_solutions))]
+            elem_solutions_cost = pool.map(func_map, all_indices)
+            pool.close()
 
         grasp_set = get_grasp_set(elem_solutions_cost, alpha)
         while True:
@@ -187,8 +210,16 @@ def solve(alpha=0.35):
                 break
         k += 1
 
+def objective_function_value(solution):
+    return sum(map(sum, solution))
+
 def main():
-    solve()
+
+    start_time = timeit.default_timer()
+    global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
+    generate_all_element_solutions(nHours, nNurses, minHours, maxHours, maxConsec, maxPresence)
+    elapsed = timeit.default_timer() - start_time
+    print("Time elapsed",elapsed)
 
 if __name__ == "__main__":
     main()
