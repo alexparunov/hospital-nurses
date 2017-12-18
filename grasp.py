@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import numpy as np
 import math
 import json
@@ -6,17 +6,24 @@ import timeit
 import multiprocessing as mp
 
 
-nNurses = 20
-nHours = 8
-minHours = 2
-maxHours = 5
-maxConsec = 4
+#nNurses = 20
+#nHours = 8
+#minHours = 2
+#maxHours = 5
+#maxConsec = 4
+#maxPresence = 5
+#demand = [1, 2, 3, 2, 4, 3, 2, 4]
 
-maxPresence = 5
+nNurses=1100;
+nHours=24;
+minHours=6;
+maxHours=18;
+maxConsec=7;
+maxPresence=24;
+demand=[964, 650, 966, 1021, 824, 387, 828, 952, 611, 468, 403, 561, 862, 597, 1098, 855, 918, 1016, 897, 356, 615, 670, 826, 349];
 
-demand = [1, 2, 3, 2, 4, 3, 2, 4]
-
-elem_solutions = json.load(open('solutions.json','r'))
+filename = 'jsons/all_solutions_{}.json'.format(nHours)
+elem_solutions = json.load(open(filename,'r'))
 
 # element solution represented as binary array [0,1,1,0,...#hours]
 
@@ -34,7 +41,7 @@ def num_to_bin(num):
 
 
 def bin_to_num(bin_ar):
-    return sum(list(map(lambda (i, x): x * (2**i), enumerate(bin_ar))))
+    return sum(list(map(lambda ix: ix[1] * (2**ix[0]), enumerate(bin_ar))))
 
 # check for constraints
 
@@ -88,9 +95,8 @@ def solution_is_ok(el_solution, minHours, maxHours, maxConsec, maxPresence):
 
     return True
 
-# Generate at least |2*nurses| solutions so that we can choose
-
-def generate_all_element_solutions(hours, nurses, minHours, maxHours, maxConsec, maxPresence):
+# Generates all solutions
+def generate_all_element_solutions(hours, nurses, minHours, maxHours, maxConsec, maxPresence, filename):
 
     max_number = 0
     for h in range(hours):
@@ -108,8 +114,12 @@ def generate_all_element_solutions(hours, nurses, minHours, maxHours, maxConsec,
         for i in range(hours - len(element_solution)):
             element_solution.append(0) # appending 0-s
 
-    with open("all_solutions.json","w") as f:
+    with open(filename,"w") as f:
         json.dump(element_solutions, f)
+
+    return element_solutions
+
+# Generate at least |2*nurses| random solutions so that we can choose
 
 def generate_random_element_solutions(hours, nurses, minHours, maxHours, maxConsec, maxPresence):
 
@@ -145,9 +155,9 @@ def gc(el_solution, demand):
     positive_sum = sum(dem) - sum(updated_demand)
     # total number of decreased hours from negative demand[i] values
     #(the lower, the better)
-    negative_sum = sum(list(map(lambda (i, x): updated_demand[i] if x <= 0 else 0, enumerate(demand))))
+    negative_sum = sum(list(map(lambda ix: updated_demand[ix[0]] if ix[1] <= 0 else 0, enumerate(demand))))
     exp1 = 2**positive_sum
-    exp2 = 3**(-negative_sum)
+    exp2 = 2**(-negative_sum)
     if exp2 != 0:
         cost = float(exp1) / float(exp2)
     else:
@@ -179,19 +189,16 @@ def get_grasp_set(elem_solutions_cost, alpha):
     return grasp_set
 
 
-def solve(alpha=0.2):
+def solve(alpha=0.35, maxIterations = 100):
     global elem_solutions
     global demand
     solution = []
     used_indices = []
     k = 0
     cpus = mp.cpu_count() - 1
-    while True:
+    while k <= maxIterations:
         if(is_solved(demand)):
             return solution
-        elif k >= len(elem_solutions) and not is_solved(demand):
-            print("Ooops, no solution was found with a given set of element solutions.")
-            return []
 
         if k < 4:
             pool = mp.Pool(processes=cpus)
@@ -209,17 +216,37 @@ def solve(alpha=0.2):
                 demand = gc(grasp_set[randPosGrasp][0], demand)[0]
                 break
         k += 1
+    return []
 
 def objective_function_value(solution):
     return sum(map(sum, solution))
 
+def print_solution(solution):
+    for i in len(solution):
+        for j in len(solution[0]):
+            print(solution[i][j], sep=" ")
+        print()
+
+def generate_all_jsons():
+    for hour in range(1,25):
+        filename = "jsons/all_solutions_{}.json".format(hour)
+        elem_sol = generate_all_element_solutions(hour, nNurses, minHours, maxHours, maxConsec, maxPresence, filename)
+
+def generate_one_json(hour):
+    filename = "jsons/all_solutions_{}.json".format(hour)
+    elem_sol = generate_all_element_solutions(hour, nNurses, minHours, maxHours, maxConsec, maxPresence, filename)
+
 def main():
+    global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
     start_time = timeit.default_timer()
-    global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
-    generate_all_element_solutions(nHours, nNurses, minHours, maxHours, maxConsec, maxPresence)
+    solution = solve(maxIterations = 1000000)
     elapsed = timeit.default_timer() - start_time
-    print("Time elapsed",elapsed)
-
+    
+    #generate_one_json(24)
+    if len(solution) > 0:
+        print("Solution found in {} secs with objective cost: {}".format(elapsed, objective_function_value(solution)))
+        print(solution)
+    #print(len(elem_solutions))
 if __name__ == "__main__":
     main()
