@@ -112,36 +112,6 @@ def generate_element_solutions(hours=0, nurses=0, minHours=0, maxHours=0, maxCon
 
     return element_solutions
 
-# Matrix of possible assigment options for each nurse and hour. (0,1) as not assigned and assigned
-
-
-def generate_element_solution_matrix(nHours, nNurses):
-    return [[(0, 1) for j in range(nHours)] for i in range(nNurses)]
-
-# Cost Matrix for each nurse and hour. (notAssigned, assigned)
-
-def generate_cost_matrix(nHours, nNurses):
-	return [[(0, 0) for j in range(nHours)] for i in range(nNurses)]
-
-# Greedy Cost function. Return cost and updated demand.
-
-def gc2(cost_matrix, demand):
-	# nNurses
-	for i in range(len(cost_matrix)):
-		# nHours
-		for j in range(len(cost_matrix[0])):
-			costNotAssigned = math.exp(-demand[j])
-			if(demand[j] <= 0):	
-				costAssigned = math.exp(-demand[j] - 1)
-			else:
-				costAssigned = math.exp(-demand[j] + 1)
-
-			# We want to choose maximum between those
-			cost = (costNotAssigned, costAssigned)
-			cost_matrix[i][j] = cost
-
-	return cost_matrix
-
 def gc(el_solution=[], demand=[]):
     el_sol = np.array(el_solution)
     dem = np.array(demand)
@@ -217,19 +187,8 @@ def solve(alpha=0.35):
                 break
         k += 1
 
-def solve2():
-	global demand, nNurses, nHours, minHours, maxHours, maxConsec, maxPresence
-
-	# Solution matrix 
-	solution = np.zeros((nNurses, nHours), dtype=int)
-	elem_sol_matrix = generate_element_solution_matrix(nHours, nNurses)
-	cost_matrix = generate_cost_matrix(nHours, nNurses)
-	greedy_cost = gc2(cost_matrix, demand)
-	print(greedy_cost)
-
-
 def main():
-    solve2()
+    solve()
 
 if __name__ == "__main__":
     main()
