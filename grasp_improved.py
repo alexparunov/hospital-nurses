@@ -16,6 +16,7 @@ maxPresence = 5
 
 demand = [1, 2, 3, 2, 4, 3, 2, 4]
 
+
 def solution_is_ok(el_solution=[], minHours=0, maxHours=0, maxConsec=0, maxPresence=0):
     if(sum(el_solution) < minHours):
         return False
@@ -67,40 +68,78 @@ def solution_is_ok(el_solution=[], minHours=0, maxHours=0, maxConsec=0, maxPrese
 
 # Cost Matrix for each nurse and hour. (notAssigned, assigned)
 
+
 def generate_cost_matrix(nHours, nNurses):
-	return [[(0, 0) for j in range(nHours)] for i in range(nNurses)]
+    return [[(0, 0) for h in range(nHours)] for n in range(nNurses)]
 
 # Greedy Cost function. Return cost and updated demand.
 
-def gc(cost_matrix, demand):
-	# nNurses
-	for i in range(len(cost_matrix)):
-		# nHours
-		for j in range(len(cost_matrix[0])):
-			costNotAssigned = math.exp(-demand[j])
-			if(demand[j] <= 0):	
-				costAssigned = math.exp(-demand[j] - 1)
-			else:
-				costAssigned = math.exp(-demand[j] + 1)
 
-			# We want to choose minimum between those costs
-			cost = (1/costNotAssigned, 1/costAssigned)
-			cost_matrix[i][j] = cost
+def gc(cost_matrix, demand, el_solution_ok, i, j):
 
-	return cost_matrix
+    costNotAssigned = math.exp(-demand[j])
+
+    if el_solution_ok:
+    	# very big number which will not be used. We don't want to assign more hours to those nurses
+        costAssigned = 0.0000000001
+    elif(demand[j] <= 0):
+        costAssigned = math.exp(-demand[j] - 1)
+    else:
+        costAssigned = math.exp(-demand[j] + 1)
+
+        # We want to choose minimum between those costs
+        cost = (1 / costNotAssigned, 1 / costAssigned)
+        cost_matrix[i][j] = cost
+
+    return cost_matrix
+
 
 def is_solved(demand):
     return all(h <= 0 for h in demand)
 
 
-def solve():
-	global demand, nNurses, nHours, minHours, maxHours, maxConsec, maxPresence
+def objective_function_value(solution):
+    return sum(map(sum, solution))
 
-	# Solution matrix 
-	solution = np.zeros((nNurses, nHours), dtype=int)
-	elem_sol_matrix = generate_element_solution_matrix(nHours, nNurses)
-	cost_matrix = generate_cost_matrix(nHours, nNurses)
-	greedy_cost = gc2(cost_matrix, demand)
-	
-	for i in range(nNurses):
-		for j in range(nHours):
+def solve():
+    global demand, nNurses, nHours, minHours, maxHours, maxConsec, maxPresence
+
+    # Solution matrix
+    solution = np.zeros((nNurses, nHours), dtype=int)
+    cost_matrix = generate_cost_matrix(nHours, nNurses)
+
+    max_iterations = 1  # maximum number of iterations
+    k = 0
+    while k < max_iterations:
+        if is_solved(demand):
+            return solution
+
+        for n in range(nNurses):
+            for h in range(nHours):
+                el_solution = solution[n]
+                el_solution_ok = solution_is_ok(el_solution, minHours, maxHours, maxConsec, maxPresence)
+
+                cost_matrix = gc(cost_matrix, demand, el_solution_ok, n, h)
+                optimal_cost_matrix = np.zeros((nHours, nNurses))
+
+                optimal_cost_matrix = [[min(cost_matrix[n][h][0],cost_matrix[n][h][1]) for h in range(nHours)] for n in range(nNurses)]
+        optimal_cost_matrix = np.array(optimal_cost_matrix)
+
+        minCost = optimal_cost_matrix.min()
+        maxCost = optimal_cost_matrix.max()
+        alpha = 0.35
+        grasp_matrix_arguments = np.argwhere(optimal_cost_matrix <= minCost + alpha*(maxCost - minCost))
+        
+        k += 1
+
+    #print('Full solutions was not found in {} iterations.\nPartial solution with objective value {} is:'.format(
+      #  k, objective_function_value(solution)))
+    #print(solution)
+    return solution
+
+
+def main():
+	solve()
+
+if __name__ == "__main__":
+	main()
