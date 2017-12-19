@@ -147,6 +147,11 @@ def generate_random_element_solutions(hours, nurses, minHours, maxHours, maxCons
 def gc(el_solution, demand):
     el_sol = np.array(el_solution)
     dem = np.array(demand)
+    infinity = float('inf')
+
+    for i in range(len(el_solution)):
+        if el_solution == 1 and demand[i] <= -5:
+            return(demand, infinity)
 
     updated_demand = np.array(dem - el_sol)
     demand = list(updated_demand)
@@ -189,18 +194,17 @@ def get_grasp_set(elem_solutions_cost, alpha):
     return grasp_set
 
 
-def solve(alpha=0.35, maxIterations = 100):
-    global elem_solutions
-    global demand
+def solve(alpha=0.3):
+    global elem_solutions, demand, nHours, nNurses
     solution = []
     used_indices = []
     k = 0
     cpus = mp.cpu_count() - 1
-    while k <= maxIterations:
+    while k < nNurses:
         if(is_solved(demand)):
             return solution
 
-        if k < 4:
+        if k % nHours == 0:
             pool = mp.Pool(processes=cpus)
             all_indices = [i for i in range(len(elem_solutions))]
             elem_solutions_cost = pool.map(func_map, all_indices)
@@ -212,6 +216,7 @@ def solve(alpha=0.35, maxIterations = 100):
             if randPosGrasp not in used_indices:
                 solution.append(grasp_set[randPosGrasp][0])
                 used_indices.append(randPosGrasp)
+                elem_solutions_cost.remove(grasp_set[randPosGrasp])
                 print(demand)
                 demand = gc(grasp_set[randPosGrasp][0], demand)[0]
                 break
@@ -222,9 +227,9 @@ def objective_function_value(solution):
     return sum(map(sum, solution))
 
 def print_solution(solution):
-    for i in len(solution):
-        for j in len(solution[0]):
-            print(solution[i][j], sep=" ")
+    for i in range(len(solution)):
+        for j in range(len(solution[0])):
+            print(solution[i][j], sep = " ", end=" ")
         print()
 
 def generate_all_jsons():
@@ -240,13 +245,13 @@ def main():
     global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
     start_time = timeit.default_timer()
-    solution = solve(maxIterations = 1000000)
+    solution = solve()
     elapsed = timeit.default_timer() - start_time
     
     #generate_one_json(24)
     if len(solution) > 0:
-        print("Solution found in {} secs with objective cost: {}".format(elapsed, objective_function_value(solution)))
-        print(solution)
+        print("Solution found in {} secs with objective cost: {}".format(np.round(elapsed*100)/100, objective_function_value(solution)))
+        print_solution(solution)
     #print(len(elem_solutions))
 if __name__ == "__main__":
     main()
