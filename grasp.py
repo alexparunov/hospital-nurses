@@ -109,7 +109,7 @@ def generate_all_element_solutions(hours, nurses, minHours, maxHours, maxConsec,
     element_solutions = pool.map(func_generate_solution, all_nums)
     pool.close()
 
-    element_solutions = list(rNer(lambda x: solution_is_ok(x, minHours, maxHours, maxConsec, maxPresence) == True, element_solutions))
+    element_solutions = list(map(lambda x: solution_is_ok(x, minHours, maxHours, maxConsec, maxPresence) == True, element_solutions))
     for element_solution in element_solutions:
         for i in range(hours - len(element_solution)):
             element_solution.append(0) # appending 0-s
@@ -147,27 +147,27 @@ def generate_random_element_solutions(hours, nurses, minHours, maxHours, maxCons
 def gc(el_solution, demand):
     el_sol = np.array(el_solution)
     dem = np.array(demand)
-    negative_infinity = float('-inf')
-    positive_infinity = float('inf')
 
-    penalizing_factor = 100
+    pos_hits_map_func = lambda h: 1 if (demand[h] > 0 and el_solution[h] == 1) else 0
+    neg_hits_map_func = lambda h: 1 if (demand[h] <= 0 and el_solution[h] == 1) else 0
 
-    updated_demand = np.array(dem - el_sol)
-    demand = list(updated_demand)
+    # number of times we decrease from positive value of demand
+    positive_hits = sum(list(map(pos_hits_map_func, range(len(demand)))))
 
-    # total number of decreased hours in demand (the higher, the better)
-    positive_sum = float(sum(dem) - sum(updated_demand))
-    # total number of decreased hours from negative demand[i] values
-    #(the lower, the better)
-    negative_sum = float(sum(list(map(lambda ix: 1 if ix[1] <= 0 else 0, enumerate(demand)))))
-    
-    if negative_sum == 0:
-        cost = positive_sum
-    elif positive_sum == 0:
-        cost = -negative_sum
-    else:
-        cost = negative_sum/positive_sum
+    # number of times we decrease from negative value of demand
+    negative_hits = sum(list(map(neg_hits_map_func, range(len(demand)))))
 
+    demand = np.array(dem - el_sol)
+
+    # The final goal of our greedy cost function is to have more positive hits than negative hits
+    # We first calculate the difference between positive and negative hits
+    # Then we exponentiate this difference, which means the higher/lower is difference, the higher/lower is cost
+    # After that we reciprocate exponentiated difference, since we are looking for minimal cost
+    # In other words, max(exp(hits_difference)) = min(exp(-hit_difference))
+
+    hits_difference = positive_hits - negative_hits
+    cost = math.exp(-hits_difference)
+    #print(positive_hits, negative_hits, cost)
     return(demand, cost)
 
 
@@ -218,7 +218,7 @@ def solve(alpha=0.3):
             solution.append(grasp_set[randPosGrasp][0])
             used_indices.append(randPosGrasp)
             elem_solutions_cost.remove(grasp_set[randPosGrasp])
-            print(demand)
+            #print(demand)
             demand = gc(grasp_set[randPosGrasp][0], demand)[0]
         k += 1
     return []
@@ -239,19 +239,20 @@ def generate_all_jsons():
 
 def generate_one_json(hour):
     filename = "jsons/all_solutions_{}.json".format(hour)
+    start_time = timeit.default_timer()
     elem_sol = generate_all_element_solutions(hour, nNurses, minHours, maxHours, maxConsec, maxPresence, filename)
+    elapsed = timeit.default_timer() - start_time
+    print("{} solutions generated for nHours = {} in {} secs.".format(len(elem_sol), hour, np.round(elapsed*1000)/1000))
 
 def main():
     global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
     start_time = timeit.default_timer()
-    solution = solve(1)
+    solution = solve(0.35)
     elapsed = timeit.default_timer() - start_time
     
-    #generate_one_json(24)
     if len(solution) > 0:
-        print("Solution found in {} secs with objective cost: {}".format(np.round(elapsed*100)/100, objective_function_value(solution)))
+        print("Solution found in {} secs with objective cost: {}".format(np.round(elapsed*1000)/1000, objective_function_value(solution)))
         print_solution(solution)
-    #print(len(elem_solutions))
 if __name__ == "__main__":
     main()
