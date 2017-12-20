@@ -147,26 +147,26 @@ def generate_random_element_solutions(hours, nurses, minHours, maxHours, maxCons
 def gc(el_solution, demand):
     el_sol = np.array(el_solution)
     dem = np.array(demand)
-    infinity = float('inf')
+    negative_infinity = float('-inf')
+    positive_infinity = float('inf')
 
-    for i in range(len(el_solution)):
-        if el_solution == 1 and demand[i] <= -5:
-            return(demand, infinity)
+    penalizing_factor = 100
 
     updated_demand = np.array(dem - el_sol)
     demand = list(updated_demand)
 
     # total number of decreased hours in demand (the higher, the better)
-    positive_sum = sum(dem) - sum(updated_demand)
+    positive_sum = float(sum(dem) - sum(updated_demand))
     # total number of decreased hours from negative demand[i] values
     #(the lower, the better)
-    negative_sum = sum(list(map(lambda ix: updated_demand[ix[0]] if ix[1] <= 0 else 0, enumerate(demand))))
-    exp1 = 2**positive_sum
-    exp2 = 2**(-negative_sum)
-    if exp2 != 0:
-        cost = float(exp1) / float(exp2)
+    negative_sum = float(sum(list(map(lambda ix: 1 if ix[1] <= 0 else 0, enumerate(demand)))))
+    
+    if negative_sum == 0:
+        cost = positive_sum
+    elif positive_sum == 0:
+        cost = -negative_sum
     else:
-        cost = 0.0
+        cost = negative_sum/positive_sum
 
     return(demand, cost)
 
@@ -213,13 +213,13 @@ def solve(alpha=0.3):
         grasp_set = get_grasp_set(elem_solutions_cost, alpha)
         randPosGrasp = int(math.floor(np.random.rand() * len(grasp_set)))
         if randPosGrasp not in used_indices:
+            if len(grasp_set) == 0:
+                return []
             solution.append(grasp_set[randPosGrasp][0])
             used_indices.append(randPosGrasp)
             elem_solutions_cost.remove(grasp_set[randPosGrasp])
             print(demand)
             demand = gc(grasp_set[randPosGrasp][0], demand)[0]
-            k -= 1
-            
         k += 1
     return []
 
@@ -245,7 +245,7 @@ def main():
     global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
     start_time = timeit.default_timer()
-    solution = solve()
+    solution = solve(1)
     elapsed = timeit.default_timer() - start_time
     
     #generate_one_json(24)
