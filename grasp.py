@@ -6,21 +6,21 @@ import timeit
 import multiprocessing as mp
 
 
-#nNurses = 20
-#nHours = 8
-#minHours = 2
-#maxHours = 5
-#maxConsec = 4
-#maxPresence = 5
-#demand = [1, 2, 3, 2, 4, 3, 2, 4]
+nNurses = 20
+nHours = 8
+minHours = 2
+maxHours = 5
+maxConsec = 4
+maxPresence = 5
+demand = [1, 2, 3, 2, 4, 3, 2, 4]
 
-nNurses=1100;
-nHours=24;
-minHours=6;
-maxHours=18;
-maxConsec=7;
-maxPresence=24;
-demand=[964, 650, 966, 1021, 824, 387, 828, 952, 611, 468, 403, 561, 862, 597, 1098, 855, 918, 1016, 897, 356, 615, 670, 826, 349];
+#nNurses=1100;
+#nHours=24;
+#minHours=6;
+#maxHours=18;
+#maxConsec=7;
+#maxPresence=24;
+#demand=[964, 650, 966, 1021, 824, 387, 828, 952, 611, 468, 403, 561, 862, 597, 1098, 855, 918, 1016, 897, 356, 615, 670, 826, 349];
 
 filename = 'jsons/all_solutions_{}.json'.format(nHours)
 elem_solutions = json.load(open(filename,'r'))
@@ -109,7 +109,7 @@ def generate_all_element_solutions(hours, nurses, minHours, maxHours, maxConsec,
     element_solutions = pool.map(func_generate_solution, all_nums)
     pool.close()
 
-    element_solutions = list(filter(lambda x: solution_is_ok(x, minHours, maxHours, maxConsec, maxPresence) == True, element_solutions))
+    element_solutions = list(rNer(lambda x: solution_is_ok(x, minHours, maxHours, maxConsec, maxPresence) == True, element_solutions))
     for element_solution in element_solutions:
         for i in range(hours - len(element_solution)):
             element_solution.append(0) # appending 0-s
@@ -143,7 +143,7 @@ def generate_random_element_solutions(hours, nurses, minHours, maxHours, maxCons
             n_sols += 1
 
     return element_solutions
-
+ 
 def gc(el_solution, demand):
     el_sol = np.array(el_solution)
     dem = np.array(demand)
@@ -211,20 +211,20 @@ def solve(alpha=0.3):
             pool.close()
 
         grasp_set = get_grasp_set(elem_solutions_cost, alpha)
-        while True:
-            randPosGrasp = int(math.floor(np.random.rand() * len(grasp_set)))
-            if randPosGrasp not in used_indices:
-                solution.append(grasp_set[randPosGrasp][0])
-                used_indices.append(randPosGrasp)
-                elem_solutions_cost.remove(grasp_set[randPosGrasp])
-                print(demand)
-                demand = gc(grasp_set[randPosGrasp][0], demand)[0]
-                break
+        randPosGrasp = int(math.floor(np.random.rand() * len(grasp_set)))
+        if randPosGrasp not in used_indices:
+            solution.append(grasp_set[randPosGrasp][0])
+            used_indices.append(randPosGrasp)
+            elem_solutions_cost.remove(grasp_set[randPosGrasp])
+            print(demand)
+            demand = gc(grasp_set[randPosGrasp][0], demand)[0]
+            k -= 1
+            
         k += 1
     return []
 
 def objective_function_value(solution):
-    return sum(map(sum, solution))
+    return len(solution)
 
 def print_solution(solution):
     for i in range(len(solution)):
