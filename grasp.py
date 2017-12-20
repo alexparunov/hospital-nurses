@@ -4,6 +4,7 @@ import math
 import json
 import timeit
 import multiprocessing as mp
+import pickle
 
 
 nNurses = 20
@@ -95,11 +96,12 @@ def solution_is_ok(el_solution, minHours, maxHours, maxConsec, maxPresence):
 
     return True
 
-# Generates all solutions
-def generate_all_element_solutions(hours, nurses, minHours, maxHours, maxConsec, maxPresence, filename):
+# Generates all element solutions solutions for all hours. (Need to generate once)
+
+def generate_all_element_solutions(hour, filename):
 
     max_number = 0
-    for h in range(hours):
+    for h in range(hour):
         max_number += 2**h
 
     cpus = mp.cpu_count() - 1
@@ -109,13 +111,19 @@ def generate_all_element_solutions(hours, nurses, minHours, maxHours, maxConsec,
     element_solutions = pool.map(func_generate_solution, all_nums)
     pool.close()
 
-    element_solutions = list(map(lambda x: solution_is_ok(x, minHours, maxHours, maxConsec, maxPresence) == True, element_solutions))
     for element_solution in element_solutions:
-        for i in range(hours - len(element_solution)):
+        for i in range(hour - len(element_solution)):
             element_solution.append(0) # appending 0-s
 
     with open(filename,"w") as f:
         json.dump(element_solutions, f)
+
+    return element_solutions
+
+def filter_all_element_solutions(minHours, maxHours, maxConsec, maxPresence, filename):
+    element_solutions = json.load(open(filename,'r'))
+
+    element_solutions = list(filter(lambda x: solution_is_ok(x, minHours, maxHours, maxConsec, maxPresence) == True, element_solutions))
 
     return element_solutions
 
@@ -195,9 +203,11 @@ def get_grasp_set(elem_solutions_cost, alpha):
 
 
 def solve(alpha=0.3, debug = False):
-    global elem_solutions, demand, nHours, nNurses
+    global elem_solutions, demand, nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
+
+    elem_solutions = filter_all_element_solutions(minHours, maxHours, maxConsec, maxPresence, filename)
+
     solution = []
-    used_indices = []
     k = 0
     cpus = mp.cpu_count() - 1
     while k < nNurses:
@@ -212,15 +222,14 @@ def solve(alpha=0.3, debug = False):
 
         grasp_set = get_grasp_set(elem_solutions_cost, alpha)
         randPosGrasp = int(math.floor(np.random.rand() * len(grasp_set)))
-        if randPosGrasp not in used_indices:
-            if len(grasp_set) == 0:
-                return []
-            solution.append(grasp_set[randPosGrasp][0])
-            used_indices.append(randPosGrasp)
-            elem_solutions_cost.remove(grasp_set[randPosGrasp])
-            if debug:
-                print("Iteration: {} / {}: ".format(k+1, nNurses))
-                print("Demand: {}".format(demand))
+        
+        if len(grasp_set) == 0:
+            return []
+
+        solution.append(grasp_set[randPosGrasp][0])
+        if debug:
+            print("Iteration: {} / {}: ".format(k+1, nNurses))
+            print("Demand: {}".format(demand))
             demand = gc(grasp_set[randPosGrasp][0], demand)[0]
         k += 1
     return []
@@ -237,17 +246,33 @@ def print_solution(solution):
 def generate_all_jsons():
     for hour in range(1,25):
         filename = "jsons/all_solutions_{}.json".format(hour)
-        elem_sol = generate_all_element_solutions(hour, nNurses, minHours, maxHours, maxConsec, maxPresence, filename)
+        start_time = timeit.default_timer()
+        elem_sol = generate_all_element_solutions(hour, filename)
+        elapsed = timeit.default_timer() - start_time
+        print("{} solutions generated for nHours = {} in {} secs.".format(len(elem_sol), hour, np.round(elapsed*1000)/1000))
 
 def generate_one_json(hour):
     filename = "jsons/all_solutions_{}.json".format(hour)
     start_time = timeit.default_timer()
-    elem_sol = generate_all_element_solutions(hour, nNurses, minHours, maxHours, maxConsec, maxPresence, filename)
+    elem_sol = generate_all_element_solutions(hour, filename)
     elapsed = timeit.default_timer() - start_time
     print("{} solutions generated for nHours = {} in {} secs.".format(len(elem_sol), hour, np.round(elapsed*1000)/1000))
 
+def serialize_json(hour):
+    filename = "jsons/all_solutions_{}.json".format(hour)
+    data = json.load(open(filename, 'r'))
+
+    with open('pickles/all_solutions_{}.pkl'.format(hour),'wb') as f:
+        pickle.dump(data, f)
+        print("Successfully serialized {}".format(filename))
+
+def deserialize_pickle(hour):
+    filename = "pickles/all_solutions_{}.pkl".format(hour)
+    data = pickle.load(open(filename, 'rb'))
+    
+    return data
+
 def main():
-    global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
     start_time = timeit.default_timer()
     solution = solve(0.35, True)
