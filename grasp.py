@@ -194,7 +194,7 @@ def get_grasp_set(elem_solutions_cost, alpha):
     return grasp_set
 
 
-def solve(alpha=0.3):
+def solve(alpha=0.3, debug = False):
     global elem_solutions, demand, nHours, nNurses
     solution = []
     used_indices = []
@@ -218,7 +218,9 @@ def solve(alpha=0.3):
             solution.append(grasp_set[randPosGrasp][0])
             used_indices.append(randPosGrasp)
             elem_solutions_cost.remove(grasp_set[randPosGrasp])
-            #print(demand)
+            if debug:
+                print("Iteration: {} / {}: ".format(k+1, nNurses))
+                print("Demand: {}".format(demand))
             demand = gc(grasp_set[randPosGrasp][0], demand)[0]
         k += 1
     return []
@@ -248,7 +250,7 @@ def main():
     global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
     start_time = timeit.default_timer()
-    solution = solve(0.35)
+    solution = solve(0.35, True)
     elapsed = timeit.default_timer() - start_time
     
     if len(solution) > 0:
