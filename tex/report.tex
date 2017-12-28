@@ -1,0 +1,90 @@
+\documentclass{article}
+
+\author{Asaf Badouh, Alexander Parunov}
+\title{Course Project Report}
+\date{\today}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\graphicspath{ {images/} }
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\begin{document}
+	\maketitle
+	\pagebreak
+	
+	\section{Problem Statement}
+\tab A public hospital needs to design the working schedule of their nurses. We know for, for each hour \textit{h}, that at least $demand_h$ nurses should be working. We have available a set of \textit{nNurses} and we need to determine at which hours each nurse should be working. However following constraints must be met:
+	\begin{enumerate}
+		\item Each nurse should work at least \textit{minHours} hours.
+		\item Each nurse should work at most \textit{maxHours} hours.
+		\item Each nurse should work at most \textit{maxConsec} consecutive hours.
+		\item No nurse can stay at the hospital for more than \textit{maxPresence} hours (e.g. is \textit{maxPresence} is 7, it is OK that a nurse works at 2am and also at 8am, but it not possible that he/she works at 2am and also at 9am).
+		\item No nurse can rest for more than one consecutive hour (e.g. working at 8am, resting at 9am and 10am, and working again at 11am is not allowed, since there are two consecutive resting hours).
+	\end{enumerate}
+\tab The goal is to determine at which hours each nurse should be working in order to \textbf{minimize} the \textbf{number of nurses} required and satify all above given constrains.
+	\section{Integer Linear Model}
+\tab Before defining the model and formal solution, set of parameters and decision variables that are used in model must be defined.
+	\subsection{Parameters}
+	\begin{itemize}
+		\item \textit{nNurses:} Int - number of nurses
+		\item \textit{nHours:} Int - number of hours
+		\item \textit{minHours:} Int - minimum hours each nurse should work
+		\item \textit{maxHours:} Int - maximum hours each nurse can work
+		\item \textit{maxConsec:} Int - maximum consecutive hours each nurse can work
+		\item \textit{maxPresence:} Int - maximum number of hours each nurse can be present
+		\item $demand_h[nNurses]:$ Int - demanded number of working nurses at each hour, indexed $h$
+	\end{itemize}
+	
+	\subsection{Decision Variables}
+	\begin{itemize}
+		\item $works_{n,h}[nNurses][nHours]:$ Boolean - Nurse $n$ works at hour $h$
+		\item $WA_{n,h}[nNurses][nHours]:$ Boolean - Nurse $n$ works after hour $h$
+		\item $WB_{n,h}[nNurses][nHours]:$ Boolean - Nurse $n$ worked before hour $h$
+		\item $Rest_{n,h}[nNurses][nHours]:$ Boolean - Nurse $n$ rests at hour $h$. However, nurse should have worked before and should work after the resting hour $h$. Otherwise it's not considered as resting hour.
+		\item $used_n[nNurses]:$ Boolean - Nurse $n$ is working
+	\end{itemize}
+	
+	\subsection{Objective Function}
+\tab After defining all parameters and decision variable we might proceed with definition of objective function and formal constaints. In addition to that,for clarity, we denote \textit{nHours} as $H$, and \textit{nNurses} as $N$So, since the goal of project is to have as few working nurses as possible satisfying $demand_n[nNurses]$ and all constraints, the objective function is:
+\begin{equation}
+	\min \sum_{n=1}^N used_n 
+\end{equation}
+	\subsection{Constraints}
+\tab Solution of problem must respect all constraints given in Section 1. Moreover, ILOG model direcly resembles formally stated constraints. Which means, after formally defining constraints, we may obtain an Integer Linear solution. So constraints are following:\\\\
+
+\begin{minipage}{\linewidth}
+\tab\caption{\textbf{Constraint 1:} On each hour $h$ at least $demand_h$ nurses should work.}
+	\begin{equation}
+		\sum_{n=1}^N works_{n,h} \geq demand_h, \forall h \in H
+	\end{equation}
+\end{minipage}
+
+\begin{minipage}{\linewidth}
+\tab\caption{\textbf{Constraint 2:} Each nurse $n$ should work at least $minHours$ minimum number of hours.}
+	\begin{equation}
+		\sum_{h=1}^H works_{n,h} \geq used_n \times minHours, \forall n \in N
+	\end{equation}
+\end{minipage}
+
+\begin{minipage}{\linewidth}
+\tab\caption{\textbf{Constraint 3:} Each nurse $n$ can work at most $maxHours$ maximum number of hours.}
+	\begin{equation}
+		\sum_{h=1}^H works_{n,h} \leq used_n \times minHours, \forall n \in N
+	\end{equation}
+\end{minipage}
+
+\begin{minipage}{\linewidth}
+\tab\caption{\textbf{Constraint 4:} Each nurse $n$ can work at most $maxConsec$ maximum consecutive hours.}
+	\begin{equation}
+		\sum_{j=i}^{i+maxConsec} works_{n,j} \leq used_n \times maxConsec, \forall n \in N, \forall i \in [1,nHours-maxCosec]
+	\end{equation}
+\end{minipage}
+
+	\section{Metaheuristics}
+	\subsection{GRASP}
+	\subsection{BRKGA}
+	\section{Comparative Results}
+\end{document}

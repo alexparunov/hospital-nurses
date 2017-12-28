@@ -21,10 +21,10 @@ int demand[h in H]=...; // At least demand[i] hours each nurse should work
 dvar boolean works[n in N][h in H]; //Nurse "n" works at hour "h"
 dvar boolean WA[n in N][h in H]; // WA - WorkAfter, Nurse "n" works at some hour after "h"
 dvar boolean WB[n in N][h in H]; // WB - WorkBefore, Nurse "n" works at some hour before "h"
-dvar boolean Rest[n in N][h in H]; // Rest - Rest, Nurse "n" rest at "h", note, this is NOT "Rest[n][h] == !(works[n][h])". rest means the nurse work before and after.
+dvar boolean Rest[n in N][h in H]; // Rest - Rest, Nurse "n" rest at "h", note, this is NOT "Rest[n][h] == !(works[n][h])". Rest means the nurse work before and after.
 dvar boolean used[n in N]; // nurse is working
 
-minimize sum(n in N)used[n]; // do not change this for A)
+minimize sum(n in N) used[n]; // do not change this for A
 
 subject to {
 
