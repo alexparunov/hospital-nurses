@@ -1,7 +1,7 @@
 \documentclass{article}
 
 \author{Asaf Badouh, Alexander Parunov}
-\title{Course Project Report}
+\title{AMMM Course Project Report\\ \textbf{Nurses in Hospital}}
 \date{\today}
 
 \usepackage{graphicx}
@@ -48,7 +48,7 @@
 	\end{itemize}
 	
 	\subsection{Objective Function}
-\tab After defining all parameters and decision variable we might proceed with definition of objective function and formal constaints. In addition to that,for clarity, we denote \textit{nHours} as $H$, and \textit{nNurses} as $N$So, since the goal of project is to have as few working nurses as possible satisfying $demand_n[nNurses]$ and all constraints, the objective function is:
+\tab After defining all parameters and decision variable we might proceed with definition of objective function and formal constaints. In addition to that,for clarity, we denote set of \textit{nHours} as $H$, and set of \textit{nNurses} as $N$. So, since the goal of project is to have as few working nurses as possible satisfying $demand_n[nNurses]$ and all constraints, the objective function is:
 \begin{equation}
 	\min \sum_{n=1}^N used_n 
 \end{equation}
@@ -56,33 +56,66 @@
 \tab Solution of problem must respect all constraints given in Section 1. Moreover, ILOG model direcly resembles formally stated constraints. Which means, after formally defining constraints, we may obtain an Integer Linear solution. So constraints are following:\\\\
 
 \begin{minipage}{\linewidth}
-\tab\caption{\textbf{Constraint 1:} On each hour $h$ at least $demand_h$ nurses should work.}
+\tab \caption{\textbf{Constraint 1:} On each hour $h$ at least $demand_h$ nurses should work.}
 	\begin{equation}
 		\sum_{n=1}^N works_{n,h} \geq demand_h, \forall h \in H
 	\end{equation}
 \end{minipage}
 
 \begin{minipage}{\linewidth}
-\tab\caption{\textbf{Constraint 2:} Each nurse $n$ should work at least $minHours$ minimum number of hours.}
+\tab \caption{\textbf{Constraint 2:} Each nurse $n$ should work at least $minHours$ minimum number of hours.}
 	\begin{equation}
 		\sum_{h=1}^H works_{n,h} \geq used_n \times minHours, \forall n \in N
 	\end{equation}
 \end{minipage}
 
 \begin{minipage}{\linewidth}
-\tab\caption{\textbf{Constraint 3:} Each nurse $n$ can work at most $maxHours$ maximum number of hours.}
+\tab \caption{\textbf{Constraint 3:} Each nurse $n$ can work at most $maxHours$ maximum number of hours.}
 	\begin{equation}
 		\sum_{h=1}^H works_{n,h} \leq used_n \times minHours, \forall n \in N
 	\end{equation}
 \end{minipage}
 
 \begin{minipage}{\linewidth}
-\tab\caption{\textbf{Constraint 4:} Each nurse $n$ can work at most $maxConsec$ maximum consecutive hours.}
+\tab \caption{\textbf{Constraint 4:} Each nurse $n$ can work at most $maxConsec$ maximum consecutive hours.}
 	\begin{equation}
 		\sum_{j=i}^{i+maxConsec} works_{n,j} \leq used_n \times maxConsec, \forall n \in N, \forall i \in [1,nHours-maxCosec]
 	\end{equation}
 \end{minipage}
 
+\begin{minipage}{\linewidth}
+\tab \caption{\textbf{Constraint 5:} No nurse $n$ can stay at the hospital for more than $maxPresence$ maximum present hours. In other words, if the nurse worked at hour h, he/she cannot work after $h+maxPresence$ hour.}
+	\begin{equation}
+		WB_{n,h} + WA_{n,h+maxPresence} \leq 1, \forall n \in N, \forall h \in \{h \in H|h \leq nHours-maxPresence \}
+	\end{equation}
+\end{minipage}
+
+\begin{minipage}{\linewidth}
+\tab \caption{\textbf{Constraint 6:} No nurse $n$ can rest for more than one consecutive hour.}\\
+	\medskip $\forall n \in N, \forall h \in \{h \in H|h \leq nHours-1 \}$
+	\begin{equation}
+		WA_{n,h} \geq WA_{n,h+1}
+	\end{equation}
+	\begin{equation}
+		WB_{n,h} \leq WB_{n,h+1}
+	\end{equation}
+	\begin{equation}
+		Rest_{n,h} + Rest_{n,h+1} \leq 1
+	\end{equation}
+\end{minipage}
+\\\\
+\tab In order to connect $WB_{n,h}, WA_{n,h}$ and $Rest_{n,h}$ decision variable matrices with a solution matrix $works_{n,h}}$, we need to construct following logical equivalence:\\
+\begin{minipage}{\linewidth}
+	\begin{equation}
+		Rest_{n,h} == (1-works_{n,h}) - (1-WA_{n,h}) - (1-WB_{n,h})
+	\end{equation}
+\end{minipage}
+\\\\
+\tab Which means:\\\\
+If $Rest_{n,h} = 1$, then $(1-works_{n,h}) - (1-WA_{n,h}) - (1-WB_{n,h}) = (1-0) - (1-1) - (1-1) = 1$.\\\\
+If $Rest_{n,h} = 0$, then $(1-works_{n,h}) - (1-WA_{n,h}) - (1-WB_{n,h}) = (1-0) - (1-1) - (1-0) = 0$\\\\
+
+If feasible solution exists, then we get filled matrix $works_{n,h}$ and array of used nurses $used_n$ with minimized value of objective function $\min \sum_{n=1}^N used_n$. Which means this optimization problem is solved.
 	\section{Metaheuristics}
 	\subsection{GRASP}
 	\subsection{BRKGA}

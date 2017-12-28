@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2017.10.16)  28 DEC 2017 17:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2017.10.16)  28 DEC 2017 22:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -235,8 +235,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.59 \tab\caption
-                 {\textbf{Constraint 1:} On each hour $h$ at least $demand_h...
+l.59 \tab \caption
+                  {\textbf{Constraint 1:} On each hour $h$ at least $demand_...
 
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -253,8 +253,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.66 \tab\caption
-                 {\textbf{Constraint 2:} Each nurse $n$ should work at least...
+l.66 \tab \caption
+                  {\textbf{Constraint 2:} Each nurse $n$ should work at leas...
 
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -271,8 +271,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.73 \tab\caption
-                 {\textbf{Constraint 3:} Each nurse $n$ can work at most $ma...
+l.73 \tab \caption
+                  {\textbf{Constraint 3:} Each nurse $n$ can work at most $m...
 
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -289,8 +289,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.80 \tab\caption
-                 {\textbf{Constraint 4:} Each nurse $n$ can work at most $ma...
+l.80 \tab \caption
+                  {\textbf{Constraint 4:} Each nurse $n$ can work at most $m...
 
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -309,15 +309,101 @@ Overfull \hbox (15.0pt too wide) in paragraph at lines 79--85
 []$[]$ 
  []
 
-[3] [4] (./report.aux) ) 
+[3]
+
+! LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.87 \tab \caption
+                  {\textbf{Constraint 5:} No nurse $n$ can stay at the hospi...
+
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (26.81859pt too wide) detected at line 90
+\OML/cmm/m/it/10 WB[] \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 WA[] \OMS/cmsy/m/n/10 
+^^T \OT1/cmr/m/n/10 1\OML/cmm/m/it/10 ; \OMS/cmsy/m/n/10 8\OML/cmm/m/it/10 n \O
+MS/cmsy/m/n/10 2 \OML/cmm/m/it/10 N; \OMS/cmsy/m/n/10 8\OML/cmm/m/it/10 h \OMS/
+cmsy/m/n/10 2 f\OML/cmm/m/it/10 h \OMS/cmsy/m/n/10 2 \OML/cmm/m/it/10 H\OMS/cms
+y/m/n/10 j\OML/cmm/m/it/10 h \OMS/cmsy/m/n/10 ^^T \OML/cmm/m/it/10 nHours \OMS/
+cmsy/m/n/10 ^^@ \OML/cmm/m/it/10 maxPresence\OMS/cmsy/m/n/10 g
+ []
+
+
+Overfull \hbox (15.0pt too wide) in paragraph at lines 86--92
+[]$[]$ 
+ []
+
+
+! LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.94 \tab \caption
+                  {\textbf{Constraint 6:} No nurse $n$ can rest for more tha...
+
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+! Extra }, or forgotten $.
+l.107 ...ices with a solution matrix $works_{n,h}}
+                                                  $, we need to construct fo...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+
+Overfull \hbox (15.0pt too wide) in paragraph at lines 93--117
+[]$[]$ 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--117
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--117
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--117
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--117
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--117
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--117
+
+ []
+
+[4] [5] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 2413 strings out of 493013
- 31755 string characters out of 6135681
- 93730 words of memory out of 5000000
- 5926 multiletter control sequences out of 15000+600000
- 11849 words of font info for 46 fonts, out of 8000000 for 9000
+ 2414 strings out of 493013
+ 31773 string characters out of 6135681
+ 93758 words of memory out of 5000000
+ 5927 multiletter control sequences out of 15000+600000
+ 12156 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,6n,26p,411b,199s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 39i,6n,26p,427b,199s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 /cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex1
@@ -329,10 +415,10 @@ exmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /public/amsfonts/cm/cmti10.pfb>
-Output written on report.pdf (4 pages, 131211 bytes).
+Output written on report.pdf (5 pages, 136385 bytes).
 PDF statistics:
- 61 PDF objects out of 1000 (max. 8388607)
- 43 compressed objects within 1 object stream
+ 64 PDF objects out of 1000 (max. 8388607)
+ 45 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
