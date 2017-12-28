@@ -44,3 +44,11 @@ def getBestFitness(population):
     order=sorted(range(len(fitness)), key=lambda k: fitness[k])
     print order
     return population[order[0]]
+
+def getAllValid(population,iter, maxVal):
+    fitness = np.array([e['fitness'] for e in population])
+    valid = []
+    for val in fitness:
+        if val < maxVal:
+            valid.append((val, iter))
+    return valid

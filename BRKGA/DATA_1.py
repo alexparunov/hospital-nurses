@@ -16,7 +16,7 @@ data={"nNurses": 20,
       "maxConsec": 3,
       "maxPresence": 14,
       "demand": [2, 2, 1, 1, 1, 2, 2, 3, 4, 6, 6, 7, 5, 8, 8, 7, 6, 6, 4, 3, 4, 3, 3, 3]}
-
+      Best Known solution: 11
 
 data={"nNurses": 1800,
       "nHours": 24,
@@ -25,6 +25,8 @@ data={"nNurses": 1800,
       "maxConsec": 7,
       "maxPresence": 24,
       "demand": [964, 650, 966, 1021, 824, 387, 828, 952, 611, 468, 403, 561, 862, 597, 1098, 855, 918, 1016, 897, 356, 615, 670, 826, 349]}
+
+      Best Known solution: 1098
 
 """
 data={"nNurses": 1800,
