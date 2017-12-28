@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def getChromosomeLength(data):
-    return int(data["nHours"])
+    return int(data["nHours"])*4
 
 
 def decode(population, data):
@@ -94,7 +94,7 @@ def max_hours(nurse, maxHours, maxPresence):
     start, end = start_end(nurse)
 
     logging.info("Start: %s End: %s", str(start), str(end))
-    if end - start > math.ceil(maxHours + maxPresence*0.15):
+    if end - start > math.ceil(maxHours + maxPresence*0.2):
         logging.info("fail in maxHours")
         return False
     return True
@@ -199,7 +199,7 @@ def decoder_order(data,chromosome):
                 #                       -> try to assign the nurse to the neighbor
                 start, end = start_end(sol[nrs])
                 for i in range(1, int(data["maxConsec"]), 2):
-                    if True and demIdx - i > start and demand[demIdx - i] >= demand[demIdx]/2 and\
+                    if demIdx - i > start and demand[demIdx - i] >= demand[demIdx]/2 and\
                             can_work(list(sol[nrs]), demIdx - i, data):
                         sol[nrs][demIdx - i] = 1
                         demand[demIdx - i] -= 1
