@@ -7,22 +7,17 @@ import multiprocessing as mp
 import pickle
 import sys
 import os
+from parameters import params
 
-nNurses = 20
-nHours = 8
-minHours = 2
-maxHours = 5
-maxConsec = 4
-maxPresence = 5
-demand = [1, 2, 3, 2, 4, 3, 2, 4]
+params_pos = 0
 
-#nNurses=1800;
-#nHours=24;
-#minHours=6;
-#maxHours=18;
-#maxConsec=7;
-#maxPresence=24;
-#demand=[964, 650, 966, 1021, 824, 387, 828, 952, 611, 468, 403, 561, 862, 597, 1098, 855, 918, 1016, 897, 356, 615, 670, 826, 349];
+nNurses=params[params_pos]["nNurses"]
+nHours=params[params_pos]["nHours"]
+minHours=params[params_pos]["minHours"]
+maxHours=params[params_pos]["maxHours"]
+maxConsec=params[params_pos]["maxConsec"]
+maxPresence=params[params_pos]["maxPresence"]
+demand=params[params_pos]["demand"]
 
 # element solution represented as binary array [0,1,1,0,...#hours]
 
@@ -256,6 +251,10 @@ def solve(alpha=0.35, debug = False):
 		if len(grasp_set) == 0:
 			return []
 
+		if debug:
+			print("\nIteration: {} / {}: ".format(k+1, nNurses))
+			print("Demand: {}\n".format(demand))
+
 		# Candidate Element for solution
 		candidate_element = grasp_set[randPosGrasp][0]
 		if debug:
@@ -268,9 +267,6 @@ def solve(alpha=0.35, debug = False):
 			print("Candidate Element After : {}".format(candidate_element))
 
 		solution.append(candidate_element)
-		if debug:
-			print("Iteration: {} / {}: ".format(k+1, nNurses))
-			print("Demand: {}".format(demand))
 		demand = gc(candidate_element, demand)[0]
 		k += 1
 
@@ -300,25 +296,11 @@ def generate_one_json(hour):
 	elapsed = timeit.default_timer() - start_time
 	print("{} solutions generated for nHours = {} in {} secs.".format(len(elem_sol), hour, np.round(elapsed*1000)/1000))
 
-def serialize_json(hour):
-	filename = "jsons/all_solutions_{}.json".format(hour)
-	data = json.load(open(filename, 'r'))
-
-	with open('pickles/all_solutions_{}.pkl'.format(hour),'wb') as f:
-		pickle.dump(data, f)
-		print("Successfully serialized {}".format(filename))
-
-def deserialize_pickle(hour):
-	filename = "pickles/all_solutions_{}.pkl".format(hour)
-	data = pickle.load(open(filename, 'rb'))
-	
-	return data
-
 def main():
 	global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
 	start_time = timeit.default_timer()
-	solution = solve(0.5, debug = True)
+	solution = solve(0.1, debug = True)
 	elapsed = timeit.default_timer() - start_time
 	
 	if len(solution) > 0:
@@ -328,8 +310,11 @@ def main():
 		print("Solution not found... Time elapsed: {} secs".format(np.round(elapsed*1000)/1000))
 
 def debug():
-	temp = json.load(open('jsons/all_solutions_19.json','r'))
-	print(len(temp))
+	hour = 18
+	start_time = timeit.default_timer()
+	elem_sol = generate_all_element_solutions(hour,"temp.json")
+	elapsed = timeit.default_timer() - start_time
+	print("{} solutions generated for nHours = {} in {} secs.".format(len(elem_sol), hour, np.round(elapsed*1000)/1000))
 
 if __name__ == "__main__":
 	main()
