@@ -191,7 +191,7 @@ def is_solved(demand):
 	return all(h <= 0 for h in demand)
 
 # Function used in multiprocessing map function to map element solution to
-# tuple if (el_sol, cost)
+# tuple of (el_sol, cost)
 
 
 def func_map(elem_solution):
@@ -209,8 +209,22 @@ def get_grasp_set(elem_solutions_cost, alpha):
 		lambda x: x[1] <= minCost + alpha * (maxCost - minCost), elem_solutions_cost))
 	return grasp_set
 
+def local_search(candidate_element, elem_solutions_cost, demand, alpha, nHours):
+	maxDistance = math.sqrt(nHours)*(1-alpha)
 
-def solve(alpha=0.3, debug = False):
+	distance_func = lambda x: math.sqrt(sum(np.power((np.array(x[0]) - np.array(candidate_element)),2))) <= maxDistance
+	neighborhood = list(filter(distance_func, elem_solutions_cost))
+
+	for neighbor in neighborhood:
+		gc_neighbor = gc(neighbor[0], demand)[1]
+		gc_candidate = gc(candidate_element, demand)[1]
+		if gc_neighbor < gc_candidate:
+			candidate_element = neighbor[0]
+	
+	return candidate_element
+
+
+def solve(alpha=0.35, debug = False):
 	global demand, nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
 	# For total hours < 20 the below given method is way faster and more optimal
@@ -225,6 +239,7 @@ def solve(alpha=0.3, debug = False):
 	solution = []
 	k = 0
 	cpus = mp.cpu_count() - 1
+
 	while k < nNurses:
 		if(is_solved(demand)):
 			return solution
@@ -234,18 +249,31 @@ def solve(alpha=0.3, debug = False):
 			elem_solutions_cost = pool.map(func_map, elem_solutions)
 			pool.close()
 
+		# Constructive Phase. Here we construct RCL.
 		grasp_set = get_grasp_set(elem_solutions_cost, alpha)
 		randPosGrasp = int(math.floor(np.random.rand() * len(grasp_set)))
 		
 		if len(grasp_set) == 0:
 			return []
 
-		solution.append(grasp_set[randPosGrasp][0])
+		# Candidate Element for solution
+		candidate_element = grasp_set[randPosGrasp][0]
+		if debug:
+			print("Candidate Element Before: {}".format(candidate_element))
+
+		# Perform local search in a neighborhood of candidate element
+		candidate_element = local_search(candidate_element, elem_solutions_cost, demand, alpha, nHours)
+		
+		if debug:
+			print("Candidate Element After : {}".format(candidate_element))
+
+		solution.append(candidate_element)
 		if debug:
 			print("Iteration: {} / {}: ".format(k+1, nNurses))
 			print("Demand: {}".format(demand))
-		demand = gc(grasp_set[randPosGrasp][0], demand)[0]
+		demand = gc(candidate_element, demand)[0]
 		k += 1
+
 	return []
 
 def objective_function_value(solution):
