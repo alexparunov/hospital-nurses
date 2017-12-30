@@ -123,7 +123,7 @@ If feasible solution exists, then we get filled matrix $works_{n,h}$ and array o
 	\subsection{GRASP}
 \tab The essence of GRASP is to select a candidate for solution element from a set of candidate elements using some criteria, which will be discussed later. First of all we need to generate that candidate set. The working nurse might be viewed as a boolean array, where \textit{1} means nurse works on that hour, and \textit{0} means nurse doesn't work. An example nurse boolean array might look like that: [0, 1, 1, 1, 1, 0, 0, 0]. And this working nurse is exactly the candidate element for solution. In order to increase time efficiency and solution accuracy, we generate all possible elements for hours $h \in [1,19]$ and save it locally. Then before starting solving problem, we filter that set of candidate elements so that it corresponds to specific constraints, given by parameters. Even if the set doesn't exist it still takes around 8 secs to generate all $2^{19} - 1 = 524287$ possible elements for hour $h = 19.$ And after initial generation, we can load elements from computer. This will improve speed of program. However, in case $h \geq 20$, generating all possible candidate elements and storing them locally is highly time and space consuming. So instead, we temporarily generate randomly $4 \times nNurses$ feasible candidate elements, respecting all given constraints. And then use this set to solve our problem. In case of $nNurses = 1800$, it takes around 8 secs to generate this set of feasible element solutions. Our \textbf{GRASP} just like any other is divided into two phases \textit{Constructive Phase} and \textit{Local Search Phase}, with modifications of phases themselves.
 	\subsubsection{Constructive Phase}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 		\Function{construct}{gc(.),$\alpha$}
 			\State Initialize candidate set C;
 			\State $\underline{s} = min\{g(t) | t \in C \}$
@@ -133,9 +133,9 @@ If feasible solution exists, then we get filled matrix $works_{n,h}$ and array o
 			\State \Return x 
 		\EndFunction
 		\end{algorithmic}
-\tab So instead of classical \textbf{GRASP} \textit{Constructive Phase}, where candiate solution is constructed, we return one candidate element for overall solution. In most of the cases random candidate element is not the best, so we perform a \textit{Local Search} on returned element $x.$
+\tab So instead of classical \textbf{GRASP} \textit{Constructive Phase}, where candiate solution is constructed, we return one candidate element for overall solution. In most of the cases random candidate element is not the best, so we perform a \textit{Local Search} on returned candidate element $x.$\pagebreak
 	\subsubsection{Local Search Phase}
-	\begin{algorithmic}
+	\begin{algorithmic}[1]
 	\Function{localSearch}{x, C, $\alpha$, $nHours$}
 		\State $maxDistance = \sqrt{nHours} \times (1-\alpha)$
 		\State $N(x) = \{t \in C | dist(x,t) \leq maxDistance \}$
@@ -147,6 +147,27 @@ If feasible solution exists, then we get filled matrix $works_{n,h}$ and array o
 		\State \Return x
 	\EndFunction
 	\end{algorithmic}
+\tab LOCALSEARCH function will return the best element in a neighborhood of candidate element, where neighborhood is defined by Euclidean distance from that element. The radius of neighborhood is also determined by $\alpha$ parameter. In case $\alpha = 0$, we get the greediest approach, which is the best and slowest at the same time.\\
+\tab The difference between classical \textbf{GRASP} and \textbf{ours}, is that we don't construct the set of candidate solutions, and then perform \textit{Local Search} on that set. But rather randomly return 1 element from constructed $RCL$ and apply local search on 1 element. This will reduce execution time, while returning same locally optimal candidate element. To conclude \textbf{GRASP} let's introduce our \textit{Greedy Cost function}
+	\subsubsection{Greedy Cost Function}
+	\begin{algorithmic}[1]
+	\Function{greedyCost}{x, demand}
+		\State Calculate positive hits: $posHits$
+		\State Calculate negative hits: $negHits$
+		\State $demand = demand-x$
+		\State $hitsDiff = posHits - negHits$
+		\State $cost = e^{-hitsDiff}$
+		\State \Return $(demand, cost)$
+	\EndFunction
+	\end{algorithmic}
+\tab Above given \textit{Greedy Cost function} will return updated demand and cost of candidate element. In order to understand this \textit{function} let's consider following example:
+	\begin{itemize}
+		\item $demand = [1,2,3,-2,4,-5,-6]$
+		\item $x = [1,0,0,1,1,0,0]$
+	\end{itemize}
+\tab \textit{Positive Hits} is number of times $x$ decreases from positive values of $demand$, while \textit{Negative Hits} is number of times $x$ decreases from negative values of $demand.$ So in above given example, $posHits = 2$ and $negHits = 1.$ Since our goal is preferebly to decrease positive values of leftover demand, $hitsDiff$ is used. After that, exponential function is applied to $hitsDiff$, because we want to exponentially decrease/increase cost in case of wrong/right candidate element and choose the maximum cost. Since we have minimization problem, we invert exponential function, i.e. $\max e^{hitsDiff} = \min e^{-hitsDiff}$. 
 	\subsection{BRKGA}
 	\section{Comparative Results}
+	\subsection{GRASP}
+	\subsection{BRKGA}
 \end{document}
