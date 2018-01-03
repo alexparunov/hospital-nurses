@@ -9,7 +9,7 @@ import sys
 import os
 from parameters import params
 
-params_pos = 0
+params_pos = 2
 
 nNurses=params[params_pos]["nNurses"]
 nHours=params[params_pos]["nHours"]
@@ -235,7 +235,7 @@ def solve(alpha=0.35, debug = False):
 	k = 0
 	cpus = mp.cpu_count() - 1
 
-	while k < nNurses:
+	while k < nNurses*2:
 		if(is_solved(demand)):
 			return solution
 
@@ -300,7 +300,7 @@ def main():
 	global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
 	start_time = timeit.default_timer()
-	solution = solve(0.1, debug = True)
+	solution = solve(1.0, debug = True)
 	elapsed = timeit.default_timer() - start_time
 	
 	if len(solution) > 0:
