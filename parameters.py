@@ -187,6 +187,95 @@ param17 = {
 }
 params.append(param17)
 
+
+param18 = {
+	'nNurses':253,
+	'nHours':24,
+	'minHours':2,
+	'maxHours':24,
+	'maxConsec':20,
+	'maxPresence':24,
+	'demand':[158, 17, 24, 65, 69, 17, 172, 11, 58, 9, 7, 61, 75, 145, 96, 32, 82, 76, 168, 118, 163, 3, 125, 172]
+}
+params.append(param18)
+
+param19 = {
+	'nNurses':264,
+	'nHours':24,
+	'minHours':6,
+	'maxHours':22,
+	'maxConsec':8,
+	'maxPresence':24,
+	'demand':[20, 24, 176, 66, 75, 60, 39, 143, 32, 116, 11, 162, 43, 19, 54, 123, 15, 161, 164, 88, 69, 120, 125, 133]
+}
+params.append(param19)
+
+param20 = {
+	'nNurses':308,
+	'nHours':24,
+	'minHours':10,
+	'maxHours':18,
+	'maxConsec':10,
+	'maxPresence':24,
+	'demand':[3, 84, 145, 112, 80, 100, 83, 64, 119, 37, 205, 104, 66, 212, 188, 144, 80, 146, 8, 109, 16, 151, 14, 65]
+}
+params.append(param20)
+
+param21 = {
+	'nNurses':312,
+	'nHours':24,
+	'minHours':4,
+	'maxHours':19,
+	'maxConsec':18,
+	'maxPresence':24,
+	'demand':[75, 63, 66, 115, 96, 93, 142, 69, 54, 199, 188, 73, 75, 22, 167, 87, 204, 47, 202, 111, 139, 84, 161, 120]
+}
+params.append(param21)
+
+param22 = {
+	'nNurses':345,
+	'nHours':24,
+	'minHours':8,
+	'maxHours':17,
+	'maxConsec':3,
+	'maxPresence':24,
+	'demand':[167, 189, 119, 170, 26, 160, 240, 6, 98, 225, 126, 133, 161, 37, 127, 90, 211, 137, 197, 138, 13, 93, 213, 228]
+}
+params.append(param22)
+
+param23 = {
+	'nNurses':391,
+	'nHours':24,
+	'minHours':8,
+	'maxHours':13,
+	'maxConsec':3,
+	'maxPresence':24,
+	'demand':[36, 112, 34, 43, 9, 251, 259, 237, 106, 159, 221, 103, 119, 74, 109, 1, 190, 138, 182, 207, 75, 223, 192, 117]
+}
+params.append(param23)
+
+param24 = {
+	'nNurses':399,
+	'nHours':24,
+	'minHours':2,
+	'maxHours':21,
+	'maxConsec':11,
+	'maxPresence':24,
+	'demand':[82, 117, 2, 111, 15, 254, 130, 258, 165, 128, 62, 167, 11, 21, 124, 99, 157, 272, 160, 105, 102, 137, 223, 178]
+}
+params.append(param24)
+
+param25 = {
+	'nNurses':504,
+	'nHours':24,
+	'minHours':7,
+	'maxHours':17,
+	'maxConsec':10,
+	'maxPresence':22,
+	'demand':[230, 35, 64, 252, 138, 303, 59, 117, 239, 7, 147, 171, 47, 164, 170, 243, 56, 184, 108, 40, 63, 315, 272, 142]
+}
+params.append(param25)
+
 # This is used just for testings
 param_very_big = {
 	"nNurses": 1800,
