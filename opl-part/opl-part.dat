@@ -3,16 +3,15 @@
  * Author: alex and asaf
  * Creation Date: Dec 1, 2017 at 3:50:44 PM
  *********************************************/
- 
-nNurses=72;
+nNurses=220;
 nHours=24;
-minHours=6;
-maxHours=17;
-maxConsec=8;
+minHours=2;
+maxHours=18;
+maxConsec=17;
 maxPresence=24;
-demand=[35, 25, 41, 33, 24, 36, 23, 38, 48, 22, 47, 5, 31, 23, 45, 43, 8, 37, 46, 44, 42, 45, 44, 23];
- 
- 
+demand=[75, 112, 122, 13, 79, 115, 38, 27, 11, 94, 54, 39, 126, 64, 93, 57, 119, 113, 127, 154, 116, 10, 151, 113];
+
+
 //nNurses=20;
 //nHours=24;
 //minHours=5;
