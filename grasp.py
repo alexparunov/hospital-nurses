@@ -300,7 +300,7 @@ def main():
 	global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
 	start_time = timeit.default_timer()
-	solution = solve(1.0, debug = True)
+	solution = solve(0.4, debug = True)
 	elapsed = timeit.default_timer() - start_time
 	
 	if len(solution) > 0:

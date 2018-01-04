@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import matplotlib.pyplot as plt
+
 
 # 0, 0.1,....,1.0
 grasp_alpha = [i/10 for i in range(0,11)]
@@ -7,8 +9,24 @@ grasp_alpha = [i/10 for i in range(0,11)]
 grasp_time =      [481, 589, 608, 378, 181, 133, 141, 155, 183, 187, 175]
 grasp_objective = [1379, 1640, 1726, 1492, 1467, 1631, 2107, 2268, 2714, 2675, 2759]
 
+
+# Those values and results are coming from parameters.py file named as param0,param1,...param{index_of_array}
+# ILP results
+number_instances = [17, 18, 20, 30, 48, 66, 72]
+ilp_objective =    [11, 18, 11, 21, 47, 62, 49]
+ilp_time =         [0.72, 0.8, 2.57, 1.17, 5.72, 3.21, 23.89]
+
+
 def plot_grasp_vs_alpha(grasp_alpha, grasp_time, grasp_objective):
-	pass
+	fig, ax = plt.subplots()
+	ax.plot(grasp_alpha, grasp_objective,'r--', label="Objective Function Value")
+	ax.plot(grasp_alpha, grasp_time, '.b-', label="Execution Time")
+	plt.xlabel("alpha")
+
+	legend = ax.legend(loc=0, shadow=True)
+	frame = legend.get_frame()
+	frame.set_facecolor('0.90')
+	plt.show()
 
 def main():
 	plot_grasp_vs_alpha(grasp_alpha, grasp_time, grasp_objective)

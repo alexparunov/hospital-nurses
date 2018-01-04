@@ -3,16 +3,23 @@
  * Author: alex and asaf
  * Creation Date: Dec 1, 2017 at 3:50:44 PM
  *********************************************/
-
-nNurses = 20;
-nHours = 8;
-minHours = 2;
-maxHours = 5;
-maxConsec = 4;
-
-maxPresence = 5;
-
-demand = [1, 2, 3, 2, 4, 3, 2, 4];
+ 
+nNurses=72;
+nHours=24;
+minHours=6;
+maxHours=17;
+maxConsec=8;
+maxPresence=24;
+demand=[35, 25, 41, 33, 24, 36, 23, 38, 48, 22, 47, 5, 31, 23, 45, 43, 8, 37, 46, 44, 42, 45, 44, 23];
+ 
+ 
+//nNurses=20;
+//nHours=24;
+//minHours=5;
+//maxHours=9;
+//maxConsec=3;
+//maxPresence=14;
+//demand=[2, 2, 1, 1, 1, 2, 2, 3, 4, 6, 6, 7, 5, 8, 8, 7, 6, 6, 4, 3, 4, 3, 3, 3];
 
 
 // The big solution (~20 mins)
