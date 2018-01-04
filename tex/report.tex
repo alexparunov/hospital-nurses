@@ -168,7 +168,7 @@ If feasible solution exists, then we get filled matrix $works_{n,h}$ and array o
 \tab \textit{Positive Hits} is number of times $x$ decreases from positive values of $demand$, while \textit{Negative Hits} is number of times $x$ decreases from negative values of $demand.$ So in above given example, $posHits = 2$ and $negHits = 1.$ Since our goal is preferebly to decrease positive values of leftover demand, $hitsDiff$ is used. After that, exponential function is applied to $hitsDiff$, because we want to exponentially decrease/increase cost in case of wrong/right candidate element and choose the maximum cost. Since we have minimization problem, we invert exponential function, i.e. $\max e^{hitsDiff} = \min e^{-hitsDiff}$. 
 	\subsection{BRKGA}
 	\section{Comparative Results}
-\tab Before starting comparing results of metaheuristics and ILP, let's find the most optimal alpha parameter. This should be done on following pretty big instance size, to see tentative difference:
+\tab Before starting comparing results of metaheuristics and ILP, let's find the most optimal $\alpha$ parameter. And we must note that we allow overflow of available nurses. In other words, since metaheuristics are not as optimal as ILP, we may use up to $2 \times nNurses$ number of nurses. Finding optimal $\alpha$ parameter should be done on following pretty big instance size, to see tentative difference:
 \begin{itemize}
 	\item \small \textit{nNurses=1800}
 	\item \small \textit{nHours=24}
@@ -184,5 +184,5 @@ If feasible solution exists, then we get filled matrix $works_{n,h}$ and array o
 	\center{\includegraphics[scale=0.35]{grasp_vs_alpha.png}}
 	\label{fig:graspalpha}
 \end{figure}
-\tab From Figure~\ref{fig:graspalpha} we can clearly see that the most optimal value of $\alpha$ parameter is $0.4$ both timewise and objective function valuewise. Which means, we will use this $\alpha$ parameter for all future executions. 
+\tab From Figure~\ref{fig:graspalpha} we can clearly see that the most optimal value of $\alpha$ parameter is $0.35$ both timewise and objective function valuewise. Which means, we will use this $\alpha$ parameter for all future executions.
 \end{document}

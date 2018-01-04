@@ -9,7 +9,7 @@ import sys
 import os
 from parameters import params
 
-params_pos = 2
+params_pos = 24
 
 nNurses=params[params_pos]["nNurses"]
 nHours=params[params_pos]["nHours"]
@@ -239,7 +239,7 @@ def solve(alpha=0.35, debug = False):
 		if(is_solved(demand)):
 			return solution
 
-		if k % nHours == 0:
+		if k % nHours/3 == 0:
 			pool = mp.Pool(processes=cpus)
 			elem_solutions_cost = pool.map(func_map, elem_solutions)
 			pool.close()
@@ -300,7 +300,7 @@ def main():
 	global nHours, nNurses, minHours, maxHours, maxConsec, maxPresence
 
 	start_time = timeit.default_timer()
-	solution = solve(0.4, debug = True)
+	solution = solve(0.35, debug = True)
 	elapsed = timeit.default_timer() - start_time
 	
 	if len(solution) > 0:
