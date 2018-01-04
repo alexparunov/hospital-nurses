@@ -2,8 +2,6 @@ import sys
 import logging
 import math
 
-
-
 logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(__name__)
 

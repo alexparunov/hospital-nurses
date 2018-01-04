@@ -3,12 +3,18 @@ import math
 import matplotlib.pyplot as plt
 import datetime
 import sys
+sys.path.append('../')
 
 import BRKGA as brkga # BRKGA framework (problem independent)
 import DECODER_order as decoder # Decoder algorithm (problem-dependent)
-from DATA_1 import data # Input data (problem-dependent and instance-dependent)
 from CONFIGURATION import config # Configuration parameters (problem-dependent and execution-dependent)
+from parameters import params # Input data (problem-dependent and instance-dependent)
+from plot_results import ilp_objective
 
+pos = 24
+best_fitness = ilp_objective[pos]
+data = params[pos]
+print(data)
 # initializations
 numIndividuals=int(config['numIndividuals'])
 numElite=int(math.ceil(numIndividuals*config['eliteProp']))
@@ -19,9 +25,9 @@ ro=float(config['inheritanceProb'])
 evol=[]
 validFitness = []
 
-bestKnownFit = [1098]
+bestKnownFit = [best_fitness]
 if bestKnownFit:
-    bestKnownFit = [1098] * (maxNumGen+1)
+    bestKnownFit = [best_fitness] * (maxNumGen+1)
 
 
 # Main body
@@ -64,15 +70,3 @@ print bestIndividual
 
 flat_list = [item for sublist in validFitness for item in sublist]
 res = zip(*flat_list)
-
-if res:
-    plt.plot(res[1], res[0], "o")
-
-if bestKnownFit:
-    plt.plot(bestKnownFit)
-
-plt.plot(evol)
-plt.xlabel('number of generations')
-plt.ylabel('Fitness of best individual')
-plt.axis([0, len(evol), 0, data["nNurses"]+5])
-plt.show()
