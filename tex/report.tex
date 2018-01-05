@@ -184,5 +184,21 @@ If feasible solution exists, then we get filled matrix $works_{n,h}$ and array o
 	\center{\includegraphics[scale=0.35]{grasp_vs_alpha.png}}
 	\label{fig:graspalpha}
 \end{figure}
-\tab From Figure~\ref{fig:graspalpha} we can clearly see that the most optimal value of $\alpha$ parameter is $0.35$ both timewise and objective function valuewise. Which means, we will use this $\alpha$ parameter for all future executions.
+\tab From Figure~\ref{fig:graspalpha} we can clearly see that the most optimal value of $\alpha$ parameter is $0.35$ both timewise and objective function valuewise. Which means, we will use this $\alpha$ parameter for all future executions.\\
+\tab After running \textit{ILP,GRASP} and \textit{BRKGA} on small, medium and big instance sizes we can draw conclusions and compare the methods.
+
+\begin{figure}[!htbp]
+	\caption{Objective Function Value Comparison}
+	\center{\includegraphics[scale=0.35]{comparative_obj_value.png}}
+	\label{fig:compobjvalue}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\caption{Execution Time Comparison}
+	\center{\includegraphics[scale=0.35]{comparative_time.png}}
+	\label{fig:comptime}
+\end{figure}
+
+From Figure~\ref{fig:compobjvalue} we clearly see that \textit{GRASP} doesn't perform bad on small and medium and some big size instances objective function valuewise. The values are not very far away from the optimal found by \textit{ILP}. While \textit{BRKGA} is performing slightly better than \textit{GRASP}. Some of solutions are very close or even equal to optimal solution found by \textit{ILP}, while others are almost as same as solutions found by \textit{GRASP.}\\
+\tab However from Figure~\ref{fig:comptime} we can observe the huge difference in execution time until finding a solution. \textit{GRASP} is way faster than both \textit{ILP} and \textit{BRKGA} for medium and big instance sizes. So we pretty much get a trade-off between time and efficiency. If we can afford to run software for a longer time, then it's better to use \textit{ILP} rather then \textit{GRASP.} However, \textit{BRKGA} seems the most optimal out of 3 methods, since its execution time is somewhere in the middle. And objective function value is close to global optimal found by \textit{ILP.} 
 \end{document}
