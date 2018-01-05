@@ -167,6 +167,98 @@ If feasible solution exists, then we get filled matrix $works_{n,h}$ and array o
 	\end{itemize}
 \tab \textit{Positive Hits} is number of times $x$ decreases from positive values of $demand$, while \textit{Negative Hits} is number of times $x$ decreases from negative values of $demand.$ So in above given example, $posHits = 2$ and $negHits = 1.$ Since our goal is preferebly to decrease positive values of leftover demand, $hitsDiff$ is used. After that, exponential function is applied to $hitsDiff$, because we want to exponentially decrease/increase cost in case of wrong/right candidate element and choose the maximum cost. Since we have minimization problem, we invert exponential function, i.e. $\max e^{hitsDiff} = \min e^{-hitsDiff}$. 
 	\subsection{BRKGA}
+	\tab Our approach is to sort the demand list according to a given chromosome. Then we will try to satisfy the demand of given hour iteratively. In addition to that, we will try to satisfy the given hour "neighbors" (as explained later). After satisfying all the demands, we legalize the solution. We make sure all problem's constrains are satisfied. In case of success, we return solution table and the total number of working nurses.
+		\subsubsection{Decoder}
+			\tab The following algorithm receives set of data that contains the problem constrains. For simplification we will use the notations from the Problem Statement above.
+		\begin{algorithmic}[1]
+		\Function{construct}{data, chromosome}
+			\State Sort the Demand list according to the chromosome. \label{sort}
+			\State $Used \leftarrow \emptyset$
+		    \ForAll{$dIdx \in Demand$}
+			    \If{$Demand_{dIdx} <= 0 $}
+				    \State $continue$
+			    \EndIf
+			    \For {$nrs \in Nurses$}
+				    \If {$can\_work(.)$}
+				        \State $Used \leftarrow Used \cup \{nrs\}$
+		    		    \State Assign $nrs$ to $hour_{dIdx}$
+		    		    \State $--Demand_{dIdx}$
+		    		    \For { $distance \in \{1:maxConsec | steps of 2\}$} \label{neighbors}
+		    		    \State \Comment {Assign $nrs$ to neighbors of $hour_{dIdx}$ with interval of 2}
+		    		        \If {$hour_{dIdx-distances} \in \{hour_{start}, hour_{end}\}$ \\\hspace{3cm} \textbf{and}  $Demand_{dIdx-distances} \geq \frac{Demand_{dIdx}}{2}$ \\ \hspace{3cm} \textbf{and} $can\_work(.)$}
+		    		            \State Assign $nrs$ to $hour_{dIdx-distances}$
+		    		            \State $--Demand_{dIdx-distances}$
+		    		        \EndIf
+		    		        \If {$hour_{dIdx+distances} \in \{hour_{start}, hour_{end}\}$ \\ \hspace{3cm} \textbf{and} $Demand_{dIdx+distances} \geq \frac{Demand_{dIdx}}{2}$ \\ \hspace{3cm} \textbf{and} $can\_work(.)$}
+		    		            \State Assign $nrs$ to $hour_{dIdx+distances}$
+		    		            \State $--Demand_{dIdx+distances}$
+		    		        \EndIf
+		    		    \EndFor \Comment {End of "neighbors" loop}
+			        \EndIf
+			        \State \textbf{if} {$Demand_{dIdx} \leq 0 $} \textbf{then} \textbf{$break$}
+			    \EndFor 
+			    \State \Comment {Finish iterate over all the available nurses}
+		    \EndFor \Comment {iterate over demand list}
+
+		\State \textbf{if} ($\exists hour | Demand_{hour} \ge 0  $) \textbf{then}
+		    \State \tab \Return $\{\emptyset\}, MaxInt$
+		\State \textbf{if} ($Legalize(solution)$) \Comment {Check if all the constrains are satisfied}
+		    \State \tab \Return $solution, SizeOf(Used)$
+		\State \Return $\{\emptyset\}, MaxInt$
+		\EndFunction
+		\end{algorithmic}
+\tab In words, our decoder will iterate over the demand list and satisfy the demand of $hour$ with the first available $nurse$. When it will find a $nurse$ that can work at $hour$, it will try to assign the $nurse$ to work also in "neighborhood" of $hour$ as we can see in L:\ref{neighbors}. After iterating all the demand list, our decoder will try to $Legalize$ the the suggestion solution. In case of success, it will return the $solution$ and the $fitness$ (number of working nurses).
+\\\tab The sorting phase in L:\ref{sort} is straight-forward, the index of the largest chromosome will be the index of the first $hour$ to satisfy in the demand list. The index of the second largest chromosome will be the index of the second $hour$ to satisfy in the demand list etc.
+\\\tab \textbf{"neighborhood"} concept example L:\ref{neighbors}: assume we satisfy the demand of $hour=5$, $nurse_h = [0,1,0,0,0,1,0,0,1,0]$, and $maxConsec=4$. The neighbors hours that we will try to assign $nurse$ to are between $hour_{start} = 1$ and $hour_{end} = 8$ with interval of 2 around $hour=5$ , therefore $neighborhood = [2,4,6]$. In addition, the demand in each of the hours will be larger than half of $demand_{hour}$. In our example, $demand_2 >demand_5/2$ , $demand_4 >demand_5/2$ and $demand_6 >demand_5/2$.
+\newpage
+	\subsubsection{Check maxConsec, maxHours, maxPresence constrains}
+\tab $can\_work(.)$ function will return $True$ if nurse can work in the given $hour$, $False$ otherwise.
+	\begin{algorithmic}[1]
+	\Function{can\_work}{$nurse_h, hour, constrains$}
+	    \State $nurse_{hour} \leftarrow 1$
+	    \State \textbf{if} (nurse work more than maxConsec hours) \textbf{then} \Return $False$ \label{consec}
+	    \State \textbf{if} ($nurse_{end} - nurse_{start} > maxPresence $) \textbf{then} \Return $False$ \label{presence}
+	    \State \textbf{if} $\sum{nurse_h} > maxHours$ OR \label{max_hours}
+	    \\\tab $nurse_{end} - nurse_{start} > maxHours + 0.2*maxPresence $ \textbf{then} 
+	    \\\tab \Return $False$
+	    \State \textbf{if} (two maxConsec appears with two hours rest in between) \textbf{then} \label{consec_rest}
+	    \\\tab \Return $False$
+	    \State \Return $True$
+	\EndFunction
+	\end{algorithmic}
+\tab \textbf{$can\_work(.)$} Function will make sure that we won't assign $nurse$ to work in $hour$ that will break \textbf{$maxConsec$}, \textbf{$maxPresence$} Or \textbf{$maxHours$} constrains. Max Consecutive/Presence hours are straight-forwards constrains L:\ref{consec} \& L:\ref{presence}.\\ Max hours is a trick constrain, If we will just enforce it by summing the number of working hours we might get too many unfeasible solutions. Therefore, we choose to limit the range of possible work hours, it is similar to \textbf{$maxPresence$}, but, in same cases it will be larger than \textbf{$maxPresence$} and vise-verse. In L:\ref{max_hours} we can see the actual heuristic.
+\\\tab Last, we want to avoid assignment to \textbf{$hour$} that we will not be able to legalize later. For example, given $nurse_h:$ {[}0, 1, 1, 0, 0, 0, 1, 0{]}, $maxConsec=2$. assigning $nurse$ to work in $hour=5$ will not break the consecutive working hours constrain, $nurse_h:$ {[}0, 1, 1, 0, 0, 1, 1, 0{]}. This assignment is illegal as it has two consecutive rest hours, Trying to legalize it will cause a violation of \textbf{$maxConsec$} constrain.
+	\subsubsection{Legalize}
+\tab $Legalize$ function will return $True$ if the nurse working hours satisfied all constrains, $False$ otherwise. The function has wrapper that iterate over all working nurses. If one of the nurses fail to satisfied the constrains, it will stop iterate and return $False$.
+	\begin{algorithmic}[1]
+	\Function{LEGALIZE}{$nurse_h, constrains$}
+		\ForAll{$i \in \{nurse_{start} : nurse_{end}\}$} \Comment{Enforce 1 hour rest constrain.} \label{rest}
+		\State \textbf{if} ($nurse_i + nurse_{i+1} == 0$) \textbf{then} 
+		\State \tab Assign $nurse$ to work in $i$ or $i+1$, base on $can\_work(.)$
+		\EndFor
+		\State \textbf{if} ($\sum{nurse_h} < minHours$) \textbf{then} 
+		\State \tab Assign $nurse$ more hours
+		\State \textbf{if} ($minHours$ and $Rest$ constrains satisfied) \textbf{then} 
+		\State \tab \Return $True$
+		\State \Return $False$
+	\EndFunction
+	\end{algorithmic}
+\tab $Legalize$ function has two main goals. \textbf{First}, make sure there are no two consecutive rest hours. In L:\ref{rest} we make sure that it won't happen by assign the nurse to work in case she/he rest for two consecutive hours. In our implementation we extended it to spot three consecutive rest hour, in such case, we assigned the nurse to work in the middle hour. See examples in Table.\ref{Rest example}.
+\textbf{Second}, verify that a nurse will work more than $minHours$, we do so by adding working hours using $can\_work(.)$ function.
+\\ MaxConsec, MaxHours and MaxPresent constrains were checked as part of the assigning in $can\_work(.)$
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|ll}
+\cline{1-3}
+Input                       & Output                      & comment                                                                                                                 &  &  \\ \cline{1-3}
+{[}0, 1, 1, 0, 0, 1, 1, 0{]} & {[}0, 1, 1, 1, 0, 1, 1, 0{]} &                                                                                                                         &  &  \\ \cline{1-3}
+{[}1, 1, 0, 0, 0, 1, 1, 0{]} & {[}1, 1, 1, 0, 0, 1, 1, 0{]} & \begin{tabular}[c]{@{}c@{}}Output can't be legalized \\ (maxhour=5, maxConsec=3) \\ solution in next example\end{tabular} &  &  \\ \cline{1-3}
+{[}1, 1, 0, 0, 0, 1, 1, 0{]} & {[}1, 1, 0, 1, 0, 1, 1, 0{]} & Nurse must be assigned in the middle                                                                                    &  &  \\ \cline{1-3}
+\end{tabular} 
+\textit{nHours:} 8, \textit{minHours:} 2 \textit{maxHours:} 5 \textit{maxConsec:} 3
+\caption{Consecutive rest elimination}
+\label{Rest example}
+\end{table}
 	\section{Comparative Results}
 \tab Before starting comparing results of metaheuristics and ILP, let's find the most optimal $\alpha$ parameter. And we must note that we allow overflow of available nurses. In other words, since metaheuristics are not as optimal as ILP, we may use up to $2 \times nNurses$ number of nurses. Finding optimal $\alpha$ parameter should be done on following pretty big instance size, to see tentative difference:
 \begin{itemize}
