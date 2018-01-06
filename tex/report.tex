@@ -148,7 +148,7 @@ If feasible solution exists, then we get filled matrix $works_{n,h}$ and array o
 	\EndFunction
 	\end{algorithmic}
 \tab LOCALSEARCH function will return the best element in a neighborhood of candidate element, where neighborhood is defined by Euclidean distance from that element. The radius of neighborhood is also determined by $\alpha$ parameter. In case $\alpha = 0$, we get the greediest approach, which is the best and slowest at the same time.\\
-\tab The difference between classical \textbf{GRASP} and \textbf{ours}, is that we don't construct the set of candidate solutions, and then perform \textit{Local Search} on that set. But rather randomly return 1 element from constructed $RCL$ and apply local search on 1 element. This will reduce execution time, while returning same locally optimal candidate element. To conclude \textbf{GRASP} let's introduce our \textit{Greedy Cost function}
+\tab The difference between classical \textbf{GRASP} and \textbf{ours}, is that we don't construct the set of candidate solutions, and then perform \textit{Local Search} on that set. But rather randomly return 1 element from constructed $RCL$ and apply local search on 1 element. This will reduce execution time, while returning same locally optimal candidate element. If we followed classical \textbf{GRASP}, we would construct full solution, then apply \textit{Local Search} to modify some of the nurses in search neighborhood. This makes solution exponentially complex. While our method reduced the solution complexity to quadratic in the worst case, while modification of nurses still remains locally optimal. To conclude \textbf{GRASP} let's introduce our \textit{Greedy Cost function}
 	\subsubsection{Greedy Cost Function}
 	\begin{algorithmic}[1]
 	\Function{greedyCost}{x, demand}
@@ -292,5 +292,13 @@ Input                       & Output                      & comment             
 \end{figure}
 
 From Figure~\ref{fig:compobjvalue} we clearly see that \textit{GRASP} doesn't perform bad on small and medium and some big size instances objective function valuewise. The values are not very far away from the optimal found by \textit{ILP}. While \textit{BRKGA} is performing slightly better than \textit{GRASP}. Some of solutions are very close or even equal to optimal solution found by \textit{ILP}, while others are almost as same as solutions found by \textit{GRASP.}\\
-\tab However from Figure~\ref{fig:comptime} we can observe the huge difference in execution time until finding a solution. \textit{GRASP} is way faster than both \textit{ILP} and \textit{BRKGA} for medium and big instance sizes. So we pretty much get a trade-off between time and efficiency. If we can afford to run software for a longer time, then it's better to use \textit{ILP} rather then \textit{GRASP.} However, \textit{BRKGA} seems the most optimal out of 3 methods, since its execution time is somewhere in the middle. And objective function value is close to global optimal found by \textit{ILP.} 
+\tab However from Figure~\ref{fig:comptime} we can observe the huge difference in execution time until finding a solution. \textit{GRASP} is way faster than both \textit{ILP} and \textit{BRKGA} for medium and big instance sizes. So we pretty much get a trade-off between time and efficiency. If we can afford to run software for a longer time, then it's better to use \textit{ILP} rather then \textit{GRASP.} However, \textit{BRKGA} seems the most optimal out of 3 methods, since its execution time is somewhere in the middle. And objective function value is close to global optimal found by \textit{ILP.}
+\tab In order to understand how \textit{BRKGA} performs, let's run it on the very big data instance given beginning of Section 4. The result is depicted in Figure~\ref{fig:brkga}. We can see that result is converging to optimal found by \textit{ILP} - 1098 pretty fast.
+
+\begin{figure}[!htbp]
+	\caption{Execution of BRKGA}
+	\center{\includegraphics[scale=0.8]{brkga.png}}
+	\label{fig:brkga}
+\end{figure}
+
 \end{document}

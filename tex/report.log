@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2017.10.16)  5 JAN 2018 16:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2017.10.16)  6 JAN 2018 20:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -150,7 +150,11 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 \ALG@tmplength=\skip48
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
-) (./report.aux)
+) (./report.aux
+
+LaTeX Warning: Label `fig:comptime' multiply defined.
+
+)
 \openout1 = `report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
@@ -165,8 +169,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
 LaTeX Font Info:    ... okay on input line 16.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
 LaTeX Font Info:    ... okay on input line 16.
-
-(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+ (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count108
 \scratchdimen=\dimen114
@@ -306,73 +309,97 @@ Underfull \hbox (badness 10000) in paragraph at lines 95--119
 
  []
 
-[4] [5] [6]
+[4] [5] [6] [7] [8] [9]
+Overfull \hbox (56.63948pt too wide) in paragraph at lines 251--259
+ [][] 
+ []
+
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 174.
- <images/grasp_vs_alpha.png, id=35, 987.2082pt x 484.209pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 266.
+<images/grasp_vs_alpha.png, id=46, 987.2082pt x 484.209pt>
 File: images/grasp_vs_alpha.png Graphic file (type png)
 
 <use images/grasp_vs_alpha.png>
-Package pdftex.def Info: images/grasp_vs_alpha.png used on input line 184.
+Package pdftex.def Info: images/grasp_vs_alpha.png used on input line 276.
 (pdftex.def)             Requested size: 345.52805pt x 169.47568pt.
 
-Overfull \hbox (0.52805pt too wide) in paragraph at lines 184--186
+Overfull \hbox (0.52805pt too wide) in paragraph at lines 276--278
  [] 
  []
 
-[7 <./images/grasp_vs_alpha.png>]
-<images/comparative_obj_value.png, id=44, 987.2082pt x 484.209pt>
+<images/comparative_obj_value.png, id=48, 987.2082pt x 484.209pt>
 File: images/comparative_obj_value.png Graphic file (type png)
 
 <use images/comparative_obj_value.png>
-Package pdftex.def Info: images/comparative_obj_value.png used on input line 19
-2.
+Package pdftex.def Info: images/comparative_obj_value.png used on input line 28
+4.
 (pdftex.def)             Requested size: 345.52805pt x 169.47568pt.
 
-Overfull \hbox (0.52805pt too wide) in paragraph at lines 192--194
+Overfull \hbox (0.52805pt too wide) in paragraph at lines 284--286
  [] 
  []
 
-<images/comparative_time.png, id=45, 987.2082pt x 484.209pt>
+<images/comparative_time.png, id=49, 987.2082pt x 484.209pt>
 File: images/comparative_time.png Graphic file (type png)
 
 <use images/comparative_time.png>
-Package pdftex.def Info: images/comparative_time.png used on input line 198.
+Package pdftex.def Info: images/comparative_time.png used on input line 290.
 (pdftex.def)             Requested size: 345.52805pt x 169.47568pt.
 
-Overfull \hbox (0.52805pt too wide) in paragraph at lines 198--200
+Overfull \hbox (0.52805pt too wide) in paragraph at lines 290--292
  [] 
  []
 
-[8 <./images/comparative_obj_value.png> <./images/comparative_time.png>]
-[9] (./report.aux) ) 
+
+LaTeX Warning: Reference `fig:brkga' on page 10 undefined on input line 296.
+
+[10] [11 <./images/grasp_vs_alpha.png> <./images/comparative_obj_value.png>]
+<images/brkga.png, id=60, 564.1075pt x 423.5825pt>
+File: images/brkga.png Graphic file (type png)
+ <use images/brkga.png>
+Package pdftex.def Info: images/brkga.png used on input line 300.
+(pdftex.def)             Requested size: 451.2866pt x 338.86646pt.
+
+Overfull \hbox (106.2866pt too wide) in paragraph at lines 300--302
+ [] 
+ []
+
+[12 <./images/comparative_time.png>] [13 <./images/brkga.png>] (./report.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2995 strings out of 493013
- 40334 string characters out of 6135681
- 103134 words of memory out of 5000000
- 6485 multiletter control sequences out of 15000+600000
- 13356 words of font info for 51 fonts, out of 8000000 for 9000
+ 3030 strings out of 493013
+ 40804 string characters out of 6135681
+ 106242 words of memory out of 5000000
+ 6517 multiletter control sequences out of 15000+600000
+ 13975 words of font info for 53 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,6n,26p,1632b,265s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmb
-x12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
-9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on report.pdf (9 pages, 333633 bytes).
+ 39i,14n,26p,1632b,265s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
+Output written on report.pdf (13 pages, 464151 bytes).
 PDF statistics:
- 105 PDF objects out of 1000 (max. 8388607)
- 71 compressed objects within 1 object stream
+ 123 PDF objects out of 1000 (max. 8388607)
+ 83 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

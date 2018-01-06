@@ -11,7 +11,7 @@ from CONFIGURATION import config # Configuration parameters (problem-dependent a
 from parameters import params # Input data (problem-dependent and instance-dependent)
 from plot_results import ilp_objective
 
-pos = 24
+pos = 25
 best_fitness = ilp_objective[pos]
 data = params[pos]
 print(data)
