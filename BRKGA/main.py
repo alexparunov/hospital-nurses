@@ -1,4 +1,4 @@
-# imports
+#!/usr/bin/python
 import math
 import matplotlib.pyplot as plt
 import datetime
@@ -11,10 +11,15 @@ from CONFIGURATION import config # Configuration parameters (problem-dependent a
 from parameters import params # Input data (problem-dependent and instance-dependent)
 from plot_results import ilp_objective
 
-pos = 25
+if len(sys.argv) <= 1:
+    sys.stdout.write("Please insert 1 argument as index of parameters array to solve a problem [0-24]\n")
+    sys.exit()
+else:
+    pos = int(sys.argv[1])
+
 best_fitness = ilp_objective[pos]
 data = params[pos]
-print(data)
+
 # initializations
 numIndividuals=int(config['numIndividuals'])
 numElite=int(math.ceil(numIndividuals*config['eliteProp']))

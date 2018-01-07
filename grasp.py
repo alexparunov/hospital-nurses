@@ -9,7 +9,12 @@ import sys
 import os
 from parameters import params
 
-params_pos = 24
+
+if len(sys.argv) <= 1:
+    sys.stdout.write("Please insert 1 argument as index of parameters array to solve a problem [0-24]\n")
+    sys.exit()
+else:
+    params_pos = int(sys.argv[1])
 
 nNurses=params[params_pos]["nNurses"]
 nHours=params[params_pos]["nHours"]
